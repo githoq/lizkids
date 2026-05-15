@@ -133,6 +133,8 @@ class StorageManager {
       p.xp -= p.level * 100;
       p.level += 1;
       p.coins += 25; // recompensa de level up
+      // Emitir evento (importado dinamicamente para evitar circular)
+      import('./state.js').then(({ Bus }) => Bus.emit('profile:levelup', { level: p.level, profileId })).catch(() => {});
     }
 
     // Log da atividade
