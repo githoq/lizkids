@@ -1,0 +1,436 @@
+/* ==========================================================================
+   LIZKIDS — PREMIUM CSS
+   Hero layout, carrosséis, goals diários, levelup épico, efeitos glow.
+   ========================================================================== */
+
+/* ---------- GRADIENT TEXT ---------- */
+.text-gradient {
+  background: linear-gradient(135deg, var(--liz-yellow), var(--liz-pink) 55%, var(--liz-lilac));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.text-gradient--blue {
+  background: linear-gradient(135deg, #7BAAFF, var(--liz-lilac));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ---------- HOME LAYOUT ---------- */
+.liz-home__scroll {
+  position: absolute; inset: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  z-index: var(--z-stage);
+}
+.liz-home__scroll::-webkit-scrollbar { display: none; }
+
+/* ==========================================================================
+   HERO SECTION
+   ========================================================================== */
+
+.liz-hero {
+  min-height: 92svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px var(--sp-5) var(--sp-5);
+  position: relative;
+  /* Hint of next section visible below */
+}
+
+.liz-hero__time-badge {
+  display: inline-flex; align-items: center; gap: var(--sp-2);
+  padding: 8px 18px;
+  background: rgba(255,255,255,0.22);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(255,255,255,0.35);
+  border-radius: var(--r-pill);
+  color: #fff;
+  font-weight: 900;
+  font-size: var(--fs-sm);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: var(--sp-4);
+  animation: lizSlideDown 0.4s var(--ease-pop);
+}
+.liz-hero__time-badge svg { width: 16px; height: 16px; }
+
+.liz-hero__name {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(2.8rem, 7.5vw, 5rem);
+  color: #fff;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  text-shadow: 0 8px 0 rgba(46,34,87,0.22), 0 18px 40px rgba(0,0,0,0.35);
+  margin-bottom: var(--sp-2);
+  animation: lizSlideUp 0.45s var(--ease-pop) 0.1s both;
+}
+
+.liz-hero__tagline {
+  color: rgba(255,255,255,0.9);
+  font-weight: 800;
+  font-size: var(--fs-md);
+  margin-bottom: var(--sp-5);
+  animation: lizFadeIn 0.5s 0.25s both;
+}
+
+.liz-hero__mascot {
+  width: clamp(200px, 30vw, 300px);
+  margin: 0 auto var(--sp-5);
+  animation: lizSlideUp 0.5s var(--ease-pop) 0.15s both,
+             lizFloat 3.8s var(--ease-soft) infinite 0.65s;
+  filter: drop-shadow(0 24px 36px rgba(0,0,0,0.28))
+          drop-shadow(0 8px 12px rgba(79,124,255,0.2));
+  cursor: pointer;
+  transition: filter 300ms;
+  will-change: transform;
+}
+.liz-hero__mascot:hover {
+  filter: drop-shadow(0 28px 42px rgba(0,0,0,0.32))
+          drop-shadow(0 0 40px rgba(255,210,63,0.55));
+}
+
+.liz-hero__actions {
+  display: flex; gap: var(--sp-3); justify-content: center; flex-wrap: wrap;
+  animation: lizSlideUp 0.45s var(--ease-pop) 0.35s both;
+}
+
+/* Botão Ghost */
+.liz-btn--ghost {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  border: 2px solid rgba(255,255,255,0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 16px rgba(46,34,87,0.15);
+}
+.liz-btn--ghost:hover { background: rgba(255,255,255,0.3); }
+
+/* Botão com glow pulsante */
+.liz-btn--glow::after {
+  content: '';
+  position: absolute; inset: -4px;
+  border-radius: inherit;
+  background: inherit;
+  filter: blur(12px);
+  opacity: 0.55;
+  z-index: -1;
+  animation: lizPulse 2.2s var(--ease-soft) infinite;
+}
+.liz-btn--glow { position: relative; overflow: visible; }
+
+/* ==========================================================================
+   SEÇÕES FLUTUANTES (glass panels sobre o sky)
+   ========================================================================== */
+
+.liz-section {
+  margin: 0 var(--sp-4) var(--sp-4);
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: var(--r-xl);
+  box-shadow: 0 8px 32px rgba(46,34,87,0.12), 0 1px 0 rgba(255,255,255,0.7) inset;
+  overflow: hidden;
+  animation: lizSlideUp 0.5s var(--ease-pop) both;
+}
+
+.liz-section__header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: var(--sp-4) var(--sp-5) var(--sp-2);
+}
+.liz-section__title {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: var(--fs-xl); color: var(--ink);
+}
+.liz-section__more {
+  font-weight: 900; font-size: var(--fs-sm);
+  color: var(--liz-blue);
+  background: none;
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  transition: background var(--t-fast);
+}
+.liz-section__more:hover { background: rgba(79,124,255,0.1); }
+
+/* ==========================================================================
+   CARROSSEL HORIZONTAL
+   ========================================================================== */
+
+.liz-carousel__track {
+  display: flex;
+  gap: var(--sp-3);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: var(--sp-2) var(--sp-5) var(--sp-5);
+  cursor: grab;
+}
+.liz-carousel__track::-webkit-scrollbar { display: none; }
+.liz-carousel__track:active { cursor: grabbing; }
+
+/* Mini card do carrossel */
+.liz-mini-card {
+  min-width: 200px;
+  max-width: 220px;
+  background: var(--cloud);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--sh-soft);
+  scroll-snap-align: start;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: transform 200ms var(--ease-pop), box-shadow 200ms;
+  will-change: transform;
+}
+.liz-mini-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: var(--sh-md);
+}
+
+.liz-mini-card__art {
+  height: 120px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.liz-mini-card__art::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, transparent 50%);
+  pointer-events: none;
+}
+.liz-mini-card__art svg { width: 72%; height: 72%; position: relative; z-index: 1; }
+
+.liz-mini-card__body {
+  padding: 10px 12px 12px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.liz-mini-card__title {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: var(--fs-base); color: var(--ink);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.liz-mini-card__meta {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px;
+}
+.liz-mini-card__stars { display: flex; gap: 2px; }
+.liz-mini-card__stars span { width: 14px; height: 14px; }
+.liz-mini-card__play {
+  padding: 6px 14px;
+  font-size: 12px;
+  box-shadow: inset 0 -3px 0 rgba(0,0,0,0.12), 0 4px 0 var(--liz-yellow-deep), 0 6px 12px rgba(255,210,63,0.3);
+}
+
+/* ==========================================================================
+   STRIP DE PROGRESSO / STREAK
+   ========================================================================== */
+
+.liz-progress-strip {
+  margin: 0 var(--sp-4) var(--sp-4);
+  padding: var(--sp-4) var(--sp-5);
+  background: linear-gradient(135deg, rgba(79,124,255,0.15), rgba(181,123,255,0.15));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: var(--r-xl);
+  border: 1.5px solid rgba(255,255,255,0.5);
+  display: flex; gap: var(--sp-4); align-items: center;
+  flex-wrap: wrap;
+  animation: lizSlideUp 0.45s var(--ease-pop) 0.1s both;
+}
+.liz-progress-strip__level {
+  width: 56px; height: 56px;
+  background: linear-gradient(135deg, var(--liz-yellow), var(--liz-pink));
+  border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-weight: 700;
+  font-size: var(--fs-xl); color: #fff;
+  box-shadow: 0 4px 12px rgba(255,210,63,0.4), inset 0 2px 0 rgba(255,255,255,0.4);
+  flex-shrink: 0;
+}
+.liz-progress-strip__bar { flex: 1; min-width: 140px; }
+.liz-progress-strip__label {
+  font-weight: 900; color: #fff;
+  font-size: var(--fs-sm); margin-bottom: 6px;
+  display: flex; justify-content: space-between;
+}
+.liz-progress-strip__sub { color: rgba(255,255,255,0.8); font-weight: 800; font-size: 12px; }
+.liz-progress-strip__stats {
+  display: flex; gap: var(--sp-3); flex-shrink: 0;
+}
+
+/* ==========================================================================
+   DAILY GOALS
+   ========================================================================== */
+
+.liz-goals-card {
+  margin: 0 var(--sp-4) var(--sp-4);
+  padding: var(--sp-5);
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: var(--r-xl);
+  box-shadow: 0 8px 24px rgba(46,34,87,0.1);
+  animation: lizSlideUp 0.5s var(--ease-pop) 0.3s both;
+}
+.liz-goals-card__title {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: var(--fs-xl); color: var(--ink);
+  margin-bottom: var(--sp-4);
+  display: flex; align-items: center; gap: var(--sp-2);
+}
+.liz-goals-card__title svg { width: 24px; height: 24px; color: var(--liz-yellow); }
+.liz-goal-item {
+  display: flex; align-items: center; gap: var(--sp-3);
+  padding: var(--sp-3) 0;
+  border-bottom: 1px solid rgba(46,34,87,0.06);
+}
+.liz-goal-item:last-child { border-bottom: 0; }
+.liz-goal-item__icon {
+  width: 40px; height: 40px; border-radius: 14px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.liz-goal-item__icon svg { width: 22px; height: 22px; color: #fff; }
+.liz-goal-item__text { flex: 1; min-width: 0; }
+.liz-goal-item__label { font-weight: 900; color: var(--ink); font-size: var(--fs-sm); }
+.liz-goal-item__bar { margin-top: 4px; height: 6px; }
+.liz-goal-item__count {
+  font-weight: 900; font-size: var(--fs-sm);
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.liz-goal-item--done .liz-goal-item__label { color: var(--liz-green-deep); }
+.liz-goal-item--done .liz-goal-item__icon { filter: grayscale(0); }
+
+/* Checkmark para metas completas */
+.liz-goal-check {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--liz-green);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 3px 8px rgba(91,224,163,0.5);
+  animation: lizPopIn 0.4s var(--ease-pop);
+}
+.liz-goal-check svg { width: 16px; height: 16px; color: #fff; }
+
+/* ==========================================================================
+   LEVEL UP OVERLAY (épico)
+   ========================================================================== */
+
+.liz-levelup {
+  position: fixed; inset: 0;
+  z-index: 99990;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  background: radial-gradient(circle at center,
+    rgba(79,124,255,0.92) 0%,
+    rgba(46,34,87,0.97) 100%);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  animation: lizFadeIn 0.25s var(--ease-soft);
+  padding: var(--sp-6);
+}
+.liz-levelup__burst {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.liz-levelup__ray {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 4px;
+  background: linear-gradient(to bottom, rgba(255,210,63,0.9), transparent);
+  transform-origin: top center;
+  border-radius: 2px;
+}
+.liz-levelup__mascot {
+  width: 180px; height: 180px;
+  margin-bottom: var(--sp-5);
+  animation: lizCelebrate 1s var(--ease-pop) infinite;
+  filter: drop-shadow(0 0 40px rgba(255,210,63,0.7));
+  position: relative; z-index: 2;
+}
+.liz-levelup__title {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(2.5rem, 7vw, 4rem);
+  color: #fff;
+  text-shadow: 0 0 40px rgba(255,210,63,0.9), 0 8px 0 rgba(46,34,87,0.3);
+  margin-bottom: var(--sp-2);
+  animation: lizPopIn 0.5s var(--ease-pop) 0.2s both;
+  position: relative; z-index: 2;
+}
+.liz-levelup__level {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(4rem, 12vw, 7rem);
+  background: linear-gradient(180deg, #FFE894, #FFD23F 40%, #F4A300);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+  line-height: 1;
+  margin-bottom: var(--sp-3);
+  animation: lizPopIn 0.6s var(--ease-pop) 0.35s both;
+  position: relative; z-index: 2;
+}
+.liz-levelup__sub {
+  color: rgba(255,255,255,0.85); font-weight: 800;
+  font-size: var(--fs-md);
+  margin-bottom: var(--sp-6);
+  animation: lizFadeIn 0.5s 0.5s both;
+  position: relative; z-index: 2;
+}
+.liz-levelup__close {
+  position: relative; z-index: 2;
+  animation: lizSlideUp 0.4s var(--ease-pop) 0.7s both;
+}
+
+/* ==========================================================================
+   HERO CARD (grade de jogos home)
+   ========================================================================== */
+
+.liz-hero-card {
+  position: relative;
+  background: var(--cloud);
+  border-radius: var(--r-2xl);
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: var(--sh-lg);
+  transition: transform 220ms var(--ease-pop), box-shadow 220ms;
+  will-change: transform;
+}
+.liz-hero-card:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 28px 60px rgba(0,0,0,0.28);
+}
+.liz-hero-card__bg {
+  height: 200px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.liz-hero-card__bg::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 30%, rgba(0,0,0,0.35));
+}
+.liz-hero-card__bg svg { width: 55%; height: 55%; position: relative; z-index: 1; }
+.liz-hero-card__info {
+  padding: var(--sp-4) var(--sp-5) var(--sp-5);
+}
+.liz-hero-card__title {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: var(--fs-xl); color: var(--ink);
+  margin-bottom: 6px;
+}
+.liz-hero-card__play {
+  margin-top: var(--sp-4);
+  width: 100%;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
