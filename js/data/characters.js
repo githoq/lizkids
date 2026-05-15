@@ -564,6 +564,7 @@ export const ICONS = {
   chart:    () => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V9m6 12V5m6 16v-9"/></svg>`,
   flame:    () => `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2s4 5 4 9c0 3-2 5-5 5s-5-2-5-5c0-2 1-3 2-4 0 2 1 3 2 3-1-2 2-5 2-8z"/><path d="M12 22c4 0 7-2 7-6 0-2-1-3-2-4 0 2-1 4-3 4-1 0-2-1-2-3 0 2-2 3-2 5 0 2 1 4 2 4z"/></svg>`,
   music:    () => `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 17V5l10-2v12"/><circle cx="6" cy="17" r="3"/><circle cx="16" cy="15" r="3"/></svg>`,
+  musicOff: () => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 17V5l10-2v6M6 23l15-15"/><circle cx="6" cy="17" r="3"/><circle cx="16" cy="15" r="3"/></svg>`,
   target:   () => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>`,
   check:    () => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>`,
   bolt:     () => `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4.09 12.26a1 1 0 00.91 1.74H11l-1 8 8.91-10.26a1 1 0 00-.91-1.74H13l1-8z"/></svg>`,
