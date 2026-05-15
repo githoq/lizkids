@@ -21,23 +21,24 @@ export function Logo (dark = false) {
 export function SkyStage (variant = 'day') {
   const sky = el('div', { class: 'liz-sky' + (variant === 'night' ? ' liz-sky--night' : '') });
   const sun = variant === 'day' ? el('div', { class: 'liz-sun' }) : null;
+
+  // 2 nuvens apenas (performance)
   const clouds = el('div', { class: 'liz-clouds' }, [
     el('div', { class: 'liz-cloud liz-cloud--1' }),
     el('div', { class: 'liz-cloud liz-cloud--2' }),
-    el('div', { class: 'liz-cloud liz-cloud--3' }),
-    el('div', { class: 'liz-cloud liz-cloud--4' }),
   ]);
   const hills = el('div', { class: 'liz-hills' }, [
     el('div', { class: 'liz-hill liz-hill--back' }),
     el('div', { class: 'liz-hill liz-hill--mid' }),
     el('div', { class: 'liz-hill liz-hill--front' }),
   ]);
-  const wrap = el('div', { class: 'liz-stage-bg' });
+  const wrap = el('div', { class: 'liz-stage-bg', style: { position: 'absolute', inset: '0', zIndex: '0' } });
   wrap.appendChild(sky);
   if (sun) wrap.appendChild(sun);
   wrap.appendChild(clouds);
   wrap.appendChild(hills);
-  Particles.ambientSparkles(wrap, 18);
+  // 8 sparkles (era 14–24)
+  Particles.ambientSparkles(wrap, 8);
   return wrap;
 }
 
