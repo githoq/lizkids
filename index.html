@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#4527A0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="LizKids">
+  <meta name="description" content="LizKids — Plataforma educacional infantil cinematográfica. Aprender é uma aventura mágica.">
+
+  <title>LizKids · Aprender é uma aventura mágica</title>
+
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/svg+xml" href="./assets/icons/favicon.svg">
+  <link rel="apple-touch-icon" href="./assets/icons/icon-192.svg">
+
+  <!-- DESIGN SYSTEM -->
+  <link rel="stylesheet" href="./css/design-system.css">
+  <link rel="stylesheet" href="./css/animations.css">
+  <link rel="stylesheet" href="./css/components.css">
+  <link rel="stylesheet" href="./css/screens.css">
+  <link rel="stylesheet" href="./css/games.css">
+
+  <!-- Fontes: preload não-bloqueante — render não espera download -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap"
+        onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap">
+  </noscript>
+</head>
+<body>
+  <div id="liz-app"></div>
+
+  <!-- Loader inicial enquanto JS carrega -->
+  <div id="liz-preload" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#4527A0,#6A1B9A);z-index:9999;color:#fff;font-family:system-ui,sans-serif;">
+    <div style="text-align:center;">
+      <div style="width:64px;height:64px;margin:0 auto 16px;border:5px solid rgba(255,255,255,0.2);border-top-color:#FFD23F;border-radius:50%;animation:spin 0.9s linear infinite;"></div>
+      <div style="font-weight:700;letter-spacing:0.04em;">Carregando LizKids…</div>
+    </div>
+  </div>
+  <style>
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+
+  <script type="module" src="./js/main.js"></script>
+  <script>
+    // Remove preloader assim que a primeira tela (splash) estiver montada
+    // — sem esperar window.load nem setTimeout desnecessário
+    function _hidePL () {
+      var pl = document.getElementById('liz-preload');
+      if (!pl) return;
+      pl.style.transition = 'opacity 0.25s';
+      pl.style.opacity = '0';
+      setTimeout(function () { pl && pl.remove(); }, 280);
+    }
+    document.addEventListener('liz:ready', _hidePL, { once: true });
+    // Fallback seguro: se o evento nunca chegar (erro grave), remove em 4s
+    setTimeout(_hidePL, 4000);
+  </script>
+</body>
+</html>
