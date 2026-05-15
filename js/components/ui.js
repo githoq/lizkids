@@ -60,6 +60,27 @@ export function TopBar ({ showBack = false, onBack = null } = {}) {
 
   const right = el('div', { class: 'liz-topbar__right' });
 
+  // ─── Botão de Mute/Unmute (global) ───
+  const muteIcon = () => Audio.isMuted() ? ICONS.musicOff() : ICONS.music();
+  const muteBtn  = el('button', {
+    class: 'liz-mute-btn' + (Audio.isMuted() ? ' liz-mute-btn--off' : ''),
+    html:  muteIcon(),
+    title: Audio.isMuted() ? 'Ligar som' : 'Desligar som',
+  });
+  muteBtn.addEventListener('click', () => {
+    const on = Audio.toggleAll();
+    muteBtn.className = 'liz-mute-btn' + (on ? '' : ' liz-mute-btn--off');
+    muteBtn.innerHTML = on ? ICONS.music() : ICONS.musicOff();
+    muteBtn.title     = on ? 'Desligar som' : 'Ligar som';
+    // Animação de feedback
+    muteBtn.animate([
+      { transform: 'scale(1)' },
+      { transform: 'scale(1.35)' },
+      { transform: 'scale(1)' },
+    ], { duration: 280, easing: 'cubic-bezier(0.34,1.56,0.64,1)' });
+  });
+  right.appendChild(muteBtn);
+
   if (profile) {
     right.appendChild(el('div', { class: 'liz-pill liz-pill--coins' }, [
       el('span', { html: ICONS.coin() }),
