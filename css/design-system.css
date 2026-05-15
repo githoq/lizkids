@@ -119,7 +119,7 @@
   --t-fast: 180ms;
   --t-med:  300ms;
   --t-slow: 400ms;
-  --t-cine: 380ms;
+  --t-cine: 260ms;
 
   /* ---------- Z-index ---------- */
   --z-bg:      0;

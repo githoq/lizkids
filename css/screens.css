@@ -23,7 +23,7 @@
     radial-gradient(ellipse at 50% 100%, rgba(91,224,163,0.30), transparent 60%),
     linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 50%, var(--sky-bottom) 100%);
   background-size: 200% 200%;
-  animation: lizGradientShift 18s ease-in-out infinite;
+  animation: lizGradientShift 28s ease-in-out infinite;
   z-index: 0;
 }
 
