@@ -1,0 +1,739 @@
+/* ==========================================================================
+   LIZKIDS — ESTILOS DAS TELAS
+   ========================================================================== */
+
+/* ---------- ROOT / SCREEN HOST ---------- */
+.liz-screen {
+  position: absolute;
+  inset: 0;
+  display: none;
+  animation: lizScreenIn var(--t-cine) var(--ease-soft);
+}
+.liz-screen--active { display: block; }
+
+/* ==========================================================================
+   CENÁRIO MÁGICO COMPARTILHADO (céu animado + nuvens + partículas)
+   ========================================================================== */
+
+.liz-sky {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 10%,  rgba(255,210,63,0.45),  transparent 50%),
+    radial-gradient(ellipse at 85% 18%,  rgba(255,123,181,0.40), transparent 55%),
+    radial-gradient(ellipse at 50% 100%, rgba(91,224,163,0.30), transparent 60%),
+    linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 50%, var(--sky-bottom) 100%);
+  background-size: 200% 200%;
+  animation: lizGradientShift 18s ease-in-out infinite;
+  z-index: 0;
+}
+
+.liz-sky--night {
+  background:
+    radial-gradient(ellipse at 80% 10%, rgba(181,123,255,0.6), transparent 55%),
+    radial-gradient(ellipse at 15% 20%, rgba(79,124,255,0.6),  transparent 55%),
+    radial-gradient(ellipse at 50% 100%, rgba(255,123,181,0.4), transparent 60%),
+    linear-gradient(180deg, var(--bg-deep-1), var(--bg-deep-2) 60%, var(--bg-deep-3));
+}
+
+/* Sol mágico */
+.liz-sun {
+  position: absolute;
+  width: 240px; height: 240px;
+  top: -80px; right: -60px;
+  background: radial-gradient(circle, #FFF6C2 0%, #FFD23F 45%, transparent 70%);
+  border-radius: 50%;
+  opacity: 0.85;
+  animation: lizPulse 6s ease-in-out infinite;
+  z-index: 1;
+}
+
+/* Nuvens */
+.liz-clouds {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+.liz-cloud {
+  position: absolute;
+  background: rgba(255,255,255,0.95);
+  border-radius: 50%;
+  box-shadow:
+    40px -10px 0 -8px rgba(255,255,255,0.95),
+    80px 0    0 -16px rgba(255,255,255,0.95),
+    -30px 10px 0 -12px rgba(255,255,255,0.95);
+  filter: drop-shadow(0 8px 12px rgba(46,34,87,0.10));
+}
+.liz-cloud--1 { width: 110px; height: 36px; top: 12%; left: 8%;  animation: lizDriftRight 60s linear infinite; }
+.liz-cloud--2 { width: 80px;  height: 28px; top: 24%; left: 60%; animation: lizDriftLeft  80s linear infinite; opacity: 0.75; }
+.liz-cloud--3 { width: 140px; height: 44px; top: 38%; left: 30%; animation: lizDriftRight 95s linear infinite; opacity: 0.8; }
+.liz-cloud--4 { width: 90px;  height: 30px; top: 8%;  left: 70%; animation: lizDriftLeft  70s linear infinite; }
+
+/* Camada de partículas (estrelinhas subindo) */
+.liz-sparkles {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  overflow: hidden;
+}
+.liz-sparkle {
+  position: absolute;
+  width: 10px; height: 10px;
+  color: var(--liz-yellow);
+  animation: lizSparkleRise linear infinite;
+  filter: drop-shadow(0 0 6px rgba(255,210,63,0.8));
+}
+
+/* Colinas decorativas */
+.liz-hills {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 28%;
+  z-index: 2;
+  pointer-events: none;
+}
+.liz-hill {
+  position: absolute;
+  bottom: 0;
+  border-radius: 100% 100% 0 0 / 100% 100% 0 0;
+}
+.liz-hill--back  { width: 70%; height: 70%; left: -10%;  background: linear-gradient(180deg, #B7F2D7, #5BE0A3); opacity: 0.7; }
+.liz-hill--mid   { width: 60%; height: 60%; right: -10%; background: linear-gradient(180deg, #5BE0A3, #1FA76A); opacity: 0.85; }
+.liz-hill--front { width: 90%; height: 35%; left: 5%;    background: linear-gradient(180deg, #1FA76A, #15824F); }
+
+/* ==========================================================================
+   SPLASH SCREEN
+   ========================================================================== */
+
+.liz-splash {
+  position: absolute; inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-5);
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255,210,63,0.4), transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(181,123,255,0.5), transparent 50%),
+    linear-gradient(180deg, #4527A0, #6A1B9A);
+  z-index: var(--z-overlay);
+  animation: lizFadeIn var(--t-med);
+}
+.liz-splash__mark {
+  width: 180px; height: 180px;
+  background: linear-gradient(135deg, var(--liz-yellow), var(--liz-pink) 60%, var(--liz-lilac));
+  border-radius: 48px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 80px rgba(255,210,63,0.55), 0 30px 60px rgba(0,0,0,0.35);
+  transform: rotate(-6deg);
+  animation: lizPopIn 0.9s var(--ease-pop), lizFloat 4s var(--ease-soft) infinite 0.9s;
+}
+.liz-splash__mark svg { width: 110px; height: 110px; }
+.liz-splash__name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(3.5rem, 9vw, 6rem);
+  color: #fff;
+  letter-spacing: -0.03em;
+  text-shadow: 0 8px 0 rgba(0,0,0,0.18), 0 18px 40px rgba(0,0,0,0.45);
+  animation: lizSlideUp 0.9s var(--ease-pop) 0.4s both;
+}
+.liz-splash__tagline {
+  font-weight: 800;
+  color: #FFE894;
+  font-size: var(--fs-lg);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.95;
+  animation: lizSlideUp 0.9s var(--ease-pop) 0.6s both;
+}
+.liz-splash__loader {
+  margin-top: var(--sp-5);
+  width: 220px; height: 10px;
+  background: rgba(255,255,255,0.18);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+  animation: lizFadeIn 0.8s 0.8s both;
+}
+.liz-splash__loader-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--liz-yellow), var(--liz-pink), var(--liz-mint));
+  border-radius: var(--r-pill);
+  box-shadow: 0 0 16px rgba(255,210,63,0.7);
+  animation: lizLoad 2.4s var(--ease-soft) forwards;
+}
+@keyframes lizLoad { to { width: 100%; } }
+
+/* ==========================================================================
+   SELEÇÃO DE PERFIS (Netflix/Disney+ style)
+   ========================================================================== */
+
+.liz-profiles {
+  position: absolute; inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-stage);
+  padding: var(--sp-6) var(--sp-5);
+}
+.liz-profiles__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  color: #fff;
+  text-shadow: 0 6px 0 rgba(0,0,0,0.18), 0 14px 30px rgba(0,0,0,0.35);
+  margin-bottom: 8px;
+  text-align: center;
+  animation: lizSlideDown 0.7s var(--ease-pop);
+}
+.liz-profiles__subtitle {
+  color: rgba(255,255,255,0.85);
+  font-weight: 800;
+  margin-bottom: var(--sp-7);
+  text-align: center;
+  animation: lizFadeIn 0.7s 0.2s both;
+}
+
+.liz-profiles__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 220px));
+  gap: var(--sp-5);
+  justify-content: center;
+  max-width: 1100px;
+  width: 100%;
+}
+
+.liz-profile-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+  cursor: pointer;
+  animation: lizPopIn 0.6s var(--ease-pop) both;
+  transition: transform var(--t-med) var(--ease-pop);
+}
+.liz-profile-card:hover { transform: translateY(-10px) scale(1.04); }
+.liz-profile-card:hover .liz-profile-card__avatar { box-shadow: 0 0 0 8px rgba(255,210,63,0.9), 0 20px 40px rgba(0,0,0,0.4); }
+
+.liz-profile-card__avatar {
+  width: clamp(140px, 18vw, 180px);
+  height: clamp(140px, 18vw, 180px);
+  border-radius: 36px;
+  background: var(--cloud);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 0 4px rgba(255,255,255,0.4), 0 14px 30px rgba(0,0,0,0.35);
+  overflow: hidden;
+  position: relative;
+  transition: box-shadow var(--t-med);
+}
+.liz-profile-card__avatar svg { width: 85%; height: 85%; }
+.liz-profile-card__avatar::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.35), transparent 40%);
+  pointer-events: none;
+}
+.liz-profile-card__name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-xl);
+  color: #fff;
+  text-shadow: 0 4px 0 rgba(0,0,0,0.2);
+}
+.liz-profile-card__level {
+  font-size: var(--fs-xs);
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--liz-yellow);
+  text-shadow: 0 2px 0 rgba(0,0,0,0.25);
+}
+
+.liz-profile-card--add .liz-profile-card__avatar {
+  background: rgba(255,255,255,0.15);
+  border: 3px dashed rgba(255,255,255,0.55);
+  box-shadow: none;
+}
+.liz-profile-card--add .liz-profile-card__avatar svg { color: rgba(255,255,255,0.85); }
+
+.liz-profile-card__delete {
+  position: absolute;
+  top: -6px; right: 6px;
+  width: 36px; height: 36px;
+  background: #fff;
+  border-radius: 50%;
+  display: none;
+  align-items: center; justify-content: center;
+  box-shadow: var(--sh-soft);
+  color: var(--liz-pink-deep);
+}
+.liz-profile-card:hover .liz-profile-card__delete { display: flex; }
+
+.liz-profiles__teacher {
+  position: absolute;
+  bottom: var(--sp-6); right: var(--sp-6);
+  display: flex; align-items: center; gap: var(--sp-3);
+  background: rgba(255,255,255,0.22);
+  border-radius: var(--r-pill);
+  padding: 12px 22px 12px 12px;
+  cursor: pointer;
+  color: #fff;
+  font-weight: 800;
+  transition: transform var(--t-fast) var(--ease-pop);
+  border: 1.5px solid rgba(255,255,255,0.3);
+}
+.liz-profiles__teacher:hover { transform: translateY(-2px) scale(1.03); }
+.liz-profiles__teacher-avatar {
+  width: 36px; height: 36px;
+  background: var(--liz-yellow);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--liz-blue-deep);
+}
+
+/* ---------- CRIAÇÃO DE PERFIL ---------- */
+.liz-create-profile {
+  padding: var(--sp-5);
+  text-align: left;
+  max-width: 620px;
+}
+.liz-create-profile__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-2xl);
+  color: var(--ink);
+  margin-bottom: var(--sp-2);
+  text-align: center;
+}
+.liz-create-profile__subtitle {
+  text-align: center;
+  color: var(--ink-soft);
+  margin-bottom: var(--sp-6);
+}
+.liz-input {
+  width: 100%;
+  padding: 18px 24px;
+  background: var(--cream);
+  border-radius: var(--r-pill);
+  font-weight: 800;
+  font-size: var(--fs-md);
+  color: var(--ink);
+  box-shadow: inset 0 2px 8px rgba(46,34,87,0.08);
+  outline: none;
+  margin-bottom: var(--sp-4);
+  border: 3px solid transparent;
+  transition: border-color var(--t-fast);
+}
+.liz-input:focus { border-color: var(--liz-blue); }
+.liz-input::placeholder { color: var(--ink-mute); }
+
+.liz-avatar-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-5);
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 4px;
+}
+.liz-avatar-pick {
+  aspect-ratio: 1;
+  background: var(--cream);
+  border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: transform var(--t-fast) var(--ease-pop), box-shadow var(--t-fast);
+  border: 3px solid transparent;
+}
+.liz-avatar-pick:hover { transform: translateY(-3px) scale(1.05); }
+.liz-avatar-pick--selected {
+  border-color: var(--liz-blue);
+  box-shadow: 0 0 0 4px rgba(79,124,255,0.25), 0 8px 18px rgba(79,124,255,0.4);
+  transform: scale(1.05);
+}
+.liz-avatar-pick svg { width: 80%; height: 80%; }
+
+.liz-form-row { display: flex; gap: var(--sp-3); justify-content: center; flex-wrap: wrap; }
+
+/* ==========================================================================
+   HOME (Tela inicial cinematográfica)
+   ========================================================================== */
+
+.liz-home {
+  position: relative; inset: 0;
+  overflow: hidden;
+}
+
+.liz-home__stage {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-stage);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px var(--sp-5) var(--sp-7);
+}
+
+.liz-home__welcome {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.4rem, 3.2vw, 2rem);
+  color: #fff;
+  text-shadow: 0 4px 0 rgba(0,0,0,0.15), 0 10px 20px rgba(0,0,0,0.3);
+  animation: lizSlideDown 0.7s var(--ease-pop);
+}
+.liz-home__name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(3rem, 8vw, 5.5rem);
+  color: #fff;
+  letter-spacing: -0.03em;
+  margin: 8px 0 var(--sp-3);
+  text-shadow: 0 8px 0 rgba(46,34,87,0.25), 0 18px 40px rgba(0,0,0,0.4);
+  animation: lizSlideUp 0.8s var(--ease-pop) 0.2s both;
+}
+.liz-home__mascot {
+  width: clamp(220px, 30vw, 360px);
+  margin: var(--sp-5) auto;
+  animation: lizSlideUp 0.9s var(--ease-pop) 0.5s both, lizFloat 4s var(--ease-soft) infinite 1.4s;
+  filter: drop-shadow(0 30px 40px rgba(0,0,0,0.35));
+}
+.liz-home__actions {
+  display: flex; gap: var(--sp-4); justify-content: center; flex-wrap: wrap;
+  animation: lizSlideUp 0.8s var(--ease-pop) 0.7s both;
+}
+
+/* HUD inferior com stats do aluno */
+.liz-home__hud {
+  position: absolute;
+  bottom: var(--sp-5); left: 50%;
+  transform: translateX(-50%);
+  display: flex; gap: var(--sp-3);
+  z-index: var(--z-ui);
+  animation: lizSlideUp 0.8s var(--ease-pop) 0.9s both;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 95vw;
+}
+
+/* ==========================================================================
+   GAMES LIBRARY
+   ========================================================================== */
+
+.liz-library {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-stage);
+  overflow-y: auto;
+  padding: 84px var(--sp-5) var(--sp-7);
+}
+.liz-library__header {
+  max-width: 1280px;
+  margin: 0 auto var(--sp-6);
+  text-align: center;
+  color: #fff;
+}
+.liz-library__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2rem, 5vw, 3rem);
+  color: #fff;
+  text-shadow: 0 6px 0 rgba(46,34,87,0.2), 0 14px 30px rgba(0,0,0,0.3);
+  margin-bottom: 8px;
+}
+.liz-library__subtitle {
+  color: rgba(255,255,255,0.92);
+  font-weight: 800;
+}
+
+.liz-library__categories {
+  display: flex;
+  gap: var(--sp-3);
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: var(--sp-5) 0;
+  max-width: 1100px;
+  margin-inline: auto;
+}
+.liz-cat-pill {
+  padding: 12px 22px;
+  background: rgba(255,255,255,0.22);
+  border: 1.5px solid rgba(255,255,255,0.3);
+  border-radius: var(--r-pill);
+  font-weight: 800;
+  color: #fff;
+  cursor: pointer;
+  transition: all var(--t-fast) var(--ease-pop);
+}
+.liz-cat-pill:hover { transform: translateY(-3px); }
+.liz-cat-pill--active {
+  background: #fff;
+  color: var(--ink);
+  box-shadow: var(--sh-md);
+  transform: scale(1.05);
+}
+
+.liz-games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--sp-5);
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.liz-game-card {
+  position: relative;
+  background: var(--cloud);
+  border-radius: var(--r-xl);
+  padding: var(--sp-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  cursor: pointer;
+  box-shadow: var(--sh-md);
+  overflow: hidden;
+  transition: transform var(--t-med) var(--ease-pop), box-shadow var(--t-med);
+  animation: lizPopIn 0.5s var(--ease-pop) both;
+  min-height: 280px;
+}
+.liz-game-card:hover {
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 0 30px 70px rgba(0,0,0,0.3);
+}
+.liz-game-card__art {
+  position: relative;
+  height: 150px;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.liz-game-card__art::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.4), transparent 50%);
+  pointer-events: none;
+  z-index: 2;
+}
+.liz-game-card__art svg { width: 60%; height: 60%; position: relative; z-index: 1; }
+.liz-game-card__title { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-lg); color: var(--ink); }
+.liz-game-card__meta { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+.liz-game-card__badge {
+  padding: 5px 11px; border-radius: var(--r-pill);
+  font-size: var(--fs-xs); font-weight: 900;
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+.liz-game-card__lock {
+  position: absolute; inset: 0;
+  background: rgba(46,34,87,0.72);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: var(--sp-2); color: #fff;
+  z-index: 3;
+}
+.liz-game-card__lock svg { width: 48px; height: 48px; }
+
+/* ==========================================================================
+   TEACHER DASHBOARD
+   ========================================================================== */
+
+.liz-teacher {
+  position: absolute; inset: 0;
+  z-index: var(--z-stage);
+  background: linear-gradient(180deg, #F4F1FF 0%, #E5DFFF 100%);
+  overflow-y: auto;
+  padding: var(--sp-5);
+}
+.liz-teacher__inner { max-width: 1280px; margin: 0 auto; }
+
+.liz-teacher__header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: var(--sp-6);
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+}
+.liz-teacher__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-2xl);
+  color: var(--ink);
+}
+.liz-teacher__subtitle { color: var(--ink-soft); font-weight: 700; margin-top: 4px; }
+
+.liz-stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-6);
+}
+.liz-stat-card {
+  background: #fff;
+  border-radius: var(--r-lg);
+  padding: var(--sp-5);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--sh-soft);
+}
+.liz-stat-card__icon {
+  width: 52px; height: 52px;
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: var(--sp-3);
+}
+.liz-stat-card__icon svg { width: 28px; height: 28px; color: #fff; }
+.liz-stat-card__value { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-2xl); color: var(--ink); line-height: 1; }
+.liz-stat-card__label { color: var(--ink-soft); font-weight: 800; font-size: var(--fs-sm); margin-top: 4px; }
+
+.liz-teacher__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--sp-5);
+}
+@media (min-width: 980px) {
+  .liz-teacher__grid { grid-template-columns: 1.4fr 1fr; }
+}
+
+.liz-panel {
+  background: #fff;
+  border-radius: var(--r-lg);
+  padding: var(--sp-5);
+  box-shadow: var(--sh-soft);
+}
+.liz-panel__title {
+  font-family: var(--font-display); font-weight: 700; font-size: var(--fs-xl);
+  color: var(--ink); margin-bottom: var(--sp-4);
+  display: flex; align-items: center; gap: var(--sp-2);
+}
+
+.liz-student-row {
+  display: grid;
+  grid-template-columns: 60px 1fr auto auto;
+  gap: var(--sp-3);
+  align-items: center;
+  padding: var(--sp-3);
+  border-radius: var(--r-md);
+  transition: background var(--t-fast);
+  cursor: pointer;
+}
+.liz-student-row:hover { background: rgba(79,124,255,0.06); }
+.liz-student-row + .liz-student-row { border-top: 1px solid rgba(46,34,87,0.06); }
+
+.liz-student-row__avatar {
+  width: 50px; height: 50px; border-radius: 16px;
+  background: var(--liz-lilac-soft);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.liz-student-row__info { min-width: 0; }
+.liz-student-row__name { font-weight: 900; color: var(--ink); }
+.liz-student-row__progress { display: flex; align-items: center; gap: var(--sp-2); margin-top: 4px; }
+.liz-student-row__progress .liz-progress { flex: 1; height: 8px; max-width: 220px; }
+.liz-student-row__stats { display: flex; gap: var(--sp-2); }
+
+.liz-bar-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  height: 220px;
+  padding: var(--sp-3) 0;
+  gap: 8px;
+}
+.liz-bar {
+  flex: 1;
+  background: linear-gradient(180deg, var(--liz-yellow), var(--liz-pink));
+  border-radius: 12px 12px 0 0;
+  position: relative;
+  min-width: 24px;
+  box-shadow: inset 0 2px 0 rgba(255,255,255,0.4);
+  animation: lizBarRise 0.8s var(--ease-pop) both;
+}
+@keyframes lizBarRise { from { height: 0 !important; } }
+.liz-bar__label { position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%); font-size: var(--fs-xs); font-weight: 800; color: var(--ink-soft); white-space: nowrap; }
+.liz-bar__value { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); font-size: var(--fs-xs); font-weight: 900; color: var(--ink); }
+
+/* ==========================================================================
+   REWARDS SHOP
+   ========================================================================== */
+
+.liz-shop {
+  position: absolute; inset: 0;
+  z-index: var(--z-stage);
+  padding: 84px var(--sp-5) var(--sp-6);
+  overflow-y: auto;
+}
+.liz-shop__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2rem, 5vw, 3rem);
+  color: #fff;
+  text-align: center;
+  text-shadow: 0 6px 0 rgba(46,34,87,0.2);
+  margin-bottom: var(--sp-2);
+}
+.liz-shop__balance {
+  display: flex; gap: var(--sp-3); justify-content: center; margin-bottom: var(--sp-5);
+}
+.liz-shop__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--sp-4);
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.liz-shop-item {
+  background: var(--cloud);
+  border-radius: var(--r-lg);
+  padding: var(--sp-4);
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+  gap: var(--sp-3);
+  box-shadow: var(--sh-md);
+  transition: transform var(--t-med) var(--ease-pop);
+  position: relative;
+  overflow: hidden;
+}
+.liz-shop-item:hover { transform: translateY(-6px); }
+.liz-shop-item__art {
+  width: 110px; height: 110px;
+  border-radius: 22px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 8px;
+}
+.liz-shop-item__name { font-family: var(--font-display); font-weight: 600; color: var(--ink); }
+.liz-shop-item__price {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #FFF2C2, #FFD23F);
+  color: #6B4A00;
+  border-radius: var(--r-pill);
+  font-weight: 900;
+  font-size: var(--fs-sm);
+  box-shadow: var(--sh-soft);
+}
+.liz-shop-item__owned {
+  position: absolute; top: 12px; right: 12px;
+  padding: 4px 12px;
+  background: var(--liz-green);
+  color: #fff;
+  border-radius: var(--r-pill);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   RESPONSIVO
+   ========================================================================== */
+
+@media (max-width: 640px) {
+  .liz-topbar { padding: 12px; }
+  .liz-topbar__profile-name { display: none; }
+  .liz-home__hud { gap: 6px; }
+  .liz-pill { padding: 6px 12px; font-size: var(--fs-xs); }
+  .liz-btn { padding: 14px 26px; font-size: var(--fs-base); }
+  .liz-btn--lg { padding: 18px 36px; font-size: var(--fs-md); }
+}

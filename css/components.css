@@ -1,0 +1,270 @@
+/* ==========================================================================
+   LIZKIDS — COMPONENTES REUTILIZÁVEIS
+   ========================================================================== */
+
+/* ---------- BOTÃO BASE ---------- */
+.liz-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+  padding: 18px 36px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-lg);
+  color: #fff;
+  background: var(--liz-blue);
+  border-radius: var(--r-pill);
+  box-shadow:
+    inset 0 -6px 0 rgba(0,0,0,0.15),
+    inset 0 2px 0 rgba(255,255,255,0.35),
+    0 10px 0 var(--liz-blue-deep),
+    0 18px 32px rgba(79,124,255,0.4);
+  transition: transform var(--t-fast) var(--ease-pop),
+              box-shadow var(--t-fast) var(--ease-pop),
+              filter var(--t-fast) ease;
+  letter-spacing: 0.01em;
+  text-shadow: 0 2px 0 rgba(0,0,0,0.12);
+}
+.liz-btn:hover { transform: translateY(-3px) scale(1.02); filter: brightness(1.06); }
+.liz-btn:active {
+  transform: translateY(6px) scale(0.98);
+  box-shadow:
+    inset 0 -2px 0 rgba(0,0,0,0.15),
+    inset 0 2px 0 rgba(255,255,255,0.35),
+    0 4px 0 var(--liz-blue-deep),
+    0 6px 14px rgba(79,124,255,0.4);
+}
+
+.liz-btn--yellow { background: var(--liz-yellow); color: var(--ink); text-shadow: none;
+  box-shadow: inset 0 -6px 0 rgba(0,0,0,0.12), inset 0 2px 0 rgba(255,255,255,0.55), 0 10px 0 var(--liz-yellow-deep), 0 18px 32px rgba(255,210,63,0.45); }
+.liz-btn--pink   { background: var(--liz-pink);
+  box-shadow: inset 0 -6px 0 rgba(0,0,0,0.15), inset 0 2px 0 rgba(255,255,255,0.4), 0 10px 0 var(--liz-pink-deep), 0 18px 32px rgba(255,123,181,0.45); }
+.liz-btn--green  { background: var(--liz-green); color: var(--ink); text-shadow: none;
+  box-shadow: inset 0 -6px 0 rgba(0,0,0,0.12), inset 0 2px 0 rgba(255,255,255,0.5), 0 10px 0 var(--liz-green-deep), 0 18px 32px rgba(91,224,163,0.5); }
+.liz-btn--lilac  { background: var(--liz-lilac);
+  box-shadow: inset 0 -6px 0 rgba(0,0,0,0.15), inset 0 2px 0 rgba(255,255,255,0.4), 0 10px 0 var(--liz-lilac-deep), 0 18px 32px rgba(181,123,255,0.45); }
+
+.liz-btn--lg { padding: 24px 56px; font-size: var(--fs-xl); border-radius: 999px; }
+.liz-btn--sm { padding: 12px 22px; font-size: var(--fs-base);
+  box-shadow: inset 0 -4px 0 rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.35), 0 6px 0 var(--liz-blue-deep), 0 10px 18px rgba(79,124,255,0.3); }
+
+/* Botão ícone redondo */
+.liz-iconbtn {
+  width: 56px; height: 56px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--cloud);
+  border-radius: 50%;
+  box-shadow:
+    inset 0 -4px 0 rgba(46,34,87,0.10),
+    inset 0 1px 0 rgba(255,255,255,0.8),
+    0 6px 0 rgba(46,34,87,0.15),
+    0 12px 24px rgba(46,34,87,0.18);
+  color: var(--ink);
+  transition: transform var(--t-fast) var(--ease-pop);
+}
+.liz-iconbtn:hover  { transform: translateY(-3px) rotate(-4deg); }
+.liz-iconbtn:active { transform: translateY(3px); }
+.liz-iconbtn svg    { width: 26px; height: 26px; }
+
+/* ---------- CARD ---------- */
+.liz-card {
+  position: relative;
+  background: var(--cloud);
+  border-radius: var(--r-xl);
+  padding: var(--sp-5);
+  box-shadow: var(--sh-md);
+  overflow: hidden;
+}
+.liz-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.55), transparent 40%);
+  pointer-events: none;
+}
+
+.liz-glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  border: 1.5px solid var(--glass-border);
+  border-radius: var(--r-xl);
+}
+
+/* ---------- BADGES & PILLS ---------- */
+.liz-pill {
+  display: inline-flex; align-items: center; gap: var(--sp-2);
+  padding: 8px 16px;
+  border-radius: var(--r-pill);
+  background: var(--cloud);
+  font-weight: 800;
+  font-size: var(--fs-sm);
+  color: var(--ink);
+  box-shadow: var(--sh-soft);
+}
+.liz-pill svg { width: 18px; height: 18px; }
+
+.liz-pill--coins  { background: linear-gradient(135deg, #FFF2C2, #FFD23F); color: #6B4A00; }
+.liz-pill--stars  { background: linear-gradient(135deg, #FFE6F2, #FF7BB5); color: #5C1A3A; }
+.liz-pill--xp     { background: linear-gradient(135deg, #DCC2FF, #B57BFF); color: #2E0B5C; }
+.liz-pill--gems   { background: linear-gradient(135deg, #B7F2D7, #5BE0A3); color: #003D24; }
+
+/* ---------- HEADER GLOBAL ---------- */
+.liz-topbar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--sp-4) var(--sp-5);
+  z-index: var(--z-ui);
+  gap: var(--sp-3);
+}
+.liz-topbar__left,
+.liz-topbar__right {
+  display: flex; align-items: center; gap: var(--sp-3);
+}
+
+.liz-topbar__profile {
+  display: flex; align-items: center; gap: var(--sp-3);
+  padding: 6px 18px 6px 6px;
+  background: var(--cloud);
+  border-radius: var(--r-pill);
+  box-shadow: var(--sh-soft);
+  cursor: pointer;
+  transition: transform var(--t-fast) var(--ease-pop);
+}
+.liz-topbar__profile:hover { transform: translateY(-2px); }
+.liz-topbar__profile-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 3px solid var(--liz-yellow);
+  overflow: hidden;
+  background: var(--liz-lilac-soft);
+  flex-shrink: 0;
+}
+.liz-topbar__profile-name { font-weight: 900; color: var(--ink); font-size: var(--fs-sm); }
+.liz-topbar__profile-level { font-size: 10px; font-weight: 800; color: var(--ink-soft); letter-spacing: 0.1em; text-transform: uppercase; }
+
+/* ---------- LOGO ---------- */
+.liz-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.liz-logo__mark {
+  width: 56px; height: 56px;
+  background: linear-gradient(135deg, var(--liz-yellow), var(--liz-pink) 60%, var(--liz-lilac));
+  border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--sh-glow-pink), 0 8px 20px rgba(46,34,87,0.2);
+  position: relative;
+  transform: rotate(-6deg);
+}
+.liz-logo__mark::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 14px;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.7), transparent 50%);
+  pointer-events: none;
+}
+.liz-logo__mark svg { width: 36px; height: 36px; position: relative; z-index: 2; }
+.liz-logo__text {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: #fff;
+  letter-spacing: -0.02em;
+  text-shadow: 0 4px 0 rgba(46,34,87,0.18), 0 8px 18px rgba(0,0,0,0.18);
+}
+.liz-logo__text--dark { color: var(--ink); text-shadow: 0 2px 0 rgba(255,255,255,0.6); }
+
+/* ---------- MODAL / SHEET ---------- */
+.liz-modal {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(circle at center, rgba(46,34,87,0.6), rgba(46,34,87,0.88));
+  z-index: var(--z-modal);
+  animation: lizFadeIn var(--t-med) var(--ease-soft);
+  padding: var(--sp-5);
+}
+.liz-modal__panel {
+  position: relative;
+  background: var(--cream);
+  border-radius: var(--r-2xl);
+  padding: var(--sp-7) var(--sp-6);
+  max-width: 540px;
+  width: 100%;
+  box-shadow: var(--sh-lg);
+  text-align: center;
+  animation: lizPopIn var(--t-med) var(--ease-pop);
+}
+
+/* ---------- TOAST ---------- */
+.liz-toast {
+  position: fixed;
+  bottom: 32px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--cloud);
+  padding: 14px 28px;
+  border-radius: var(--r-pill);
+  box-shadow: var(--sh-md);
+  font-weight: 800;
+  color: var(--ink);
+  z-index: var(--z-toast);
+  display: flex; align-items: center; gap: var(--sp-3);
+  animation: lizToast 2.6s var(--ease-soft) forwards;
+}
+
+/* ---------- PROGRESS ---------- */
+.liz-progress {
+  height: 14px;
+  background: rgba(46,34,87,0.10);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+  position: relative;
+}
+.liz-progress__fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--liz-yellow), var(--liz-pink), var(--liz-lilac));
+  border-radius: var(--r-pill);
+  box-shadow: inset 0 2px 0 rgba(255,255,255,0.4);
+  transition: width var(--t-med) var(--ease-soft);
+  position: relative;
+}
+.liz-progress__fill::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: lizShimmer 1.8s linear infinite;
+}
+
+/* ---------- STAR DISPLAY ---------- */
+.liz-stars { display: inline-flex; gap: 4px; }
+.liz-stars__item {
+  width: 28px; height: 28px;
+  color: var(--ink-mute);
+  transition: transform var(--t-med) var(--ease-pop), color var(--t-med);
+}
+.liz-stars__item--on {
+  color: var(--liz-yellow);
+  filter: drop-shadow(0 0 8px rgba(255,210,63,0.7));
+  animation: lizStarPop var(--t-slow) var(--ease-pop);
+}
+
+/* ---------- BACK BUTTON ---------- */
+.liz-back {
+  display: inline-flex; align-items: center; gap: var(--sp-2);
+  padding: 12px 22px 12px 14px;
+  background: var(--cloud);
+  border-radius: var(--r-pill);
+  box-shadow: var(--sh-soft);
+  font-weight: 800;
+  color: var(--ink);
+  font-size: var(--fs-sm);
+  transition: transform var(--t-fast) var(--ease-pop);
+}
+.liz-back:hover { transform: translateX(-3px); }
+.liz-back svg { width: 22px; height: 22px; }
