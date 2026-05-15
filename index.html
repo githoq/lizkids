@@ -7,59 +7,147 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="LizKids">
-  <meta name="description" content="LizKids — Plataforma educacional infantil cinematográfica. Aprender é uma aventura mágica.">
+  <meta name="description" content="LizKids — Plataforma educacional infantil cinematográfica.">
 
   <title>LizKids · Aprender é uma aventura mágica</title>
 
   <link rel="manifest" href="./manifest.json">
   <link rel="icon" type="image/svg+xml" href="./assets/icons/favicon.svg">
-  <link rel="apple-touch-icon" href="./assets/icons/icon-192.svg">
 
-  <!-- DESIGN SYSTEM -->
+  <!-- Fonts: pré-conectar e carregar sem bloquear render -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap">
+
+  <!-- Modulepreload para boot rápido -->
+  <link rel="modulepreload" href="./js/main.js">
+  <link rel="modulepreload" href="./js/core/error-overlay.js">
+  <link rel="modulepreload" href="./js/core/router.js">
+  <link rel="modulepreload" href="./js/core/storage.js">
+
+  <!-- CSS crítico inline para splash aparecer ANTES dos CSS externos -->
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%; overflow: hidden;
+      font-family: 'Fredoka', system-ui, -apple-system, sans-serif;
+      background: #4527A0;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    #liz-app { position: fixed; inset: 0; overflow: hidden; isolation: isolate; }
+
+    /* Splash inline — visível imediatamente */
+    .liz-boot-splash {
+      position: absolute; inset: 0; z-index: 1000;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 20px;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,210,63,0.4), transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(181,123,255,0.5), transparent 50%),
+        linear-gradient(180deg, #4527A0 0%, #6A1B9A 100%);
+      opacity: 1;
+      transition: opacity 350ms cubic-bezier(0.4,0,0.2,1);
+    }
+    .liz-boot-splash--leaving { opacity: 0; pointer-events: none; }
+    .liz-boot-splash__mark {
+      width: 160px; height: 160px;
+      background: linear-gradient(135deg, #FFD23F 0%, #FF7BB5 60%, #B57BFF 100%);
+      border-radius: 44px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 80px rgba(255,210,63,0.5), 0 24px 50px rgba(0,0,0,0.3);
+      transform: rotate(-6deg) scale(0);
+      animation: lizBootPop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+                 lizBootFloat 3.5s ease-in-out 0.55s infinite;
+    }
+    .liz-boot-splash__mark svg { width: 100px; height: 100px; }
+    .liz-boot-splash__name {
+      font-weight: 700; color: #fff;
+      font-size: clamp(3rem, 8vw, 5rem);
+      letter-spacing: -0.03em; line-height: 1;
+      text-shadow: 0 6px 0 rgba(0,0,0,0.18), 0 14px 30px rgba(0,0,0,0.45);
+      opacity: 0; transform: translateY(20px);
+      animation: lizBootSlide 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s forwards;
+    }
+    .liz-boot-splash__tagline {
+      font-family: 'Nunito', system-ui, sans-serif;
+      font-weight: 800;
+      color: #FFE894;
+      font-size: 14px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: lizBootFade 0.5s ease 0.5s forwards;
+    }
+    .liz-boot-splash__loader {
+      margin-top: 24px;
+      width: 200px; height: 8px;
+      background: rgba(255,255,255,0.18);
+      border-radius: 999px;
+      overflow: hidden;
+      opacity: 0;
+      animation: lizBootFade 0.5s ease 0.65s forwards;
+    }
+    .liz-boot-splash__loader-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, #FFD23F, #FF7BB5, #7EE8D4);
+      border-radius: 999px;
+      box-shadow: 0 0 14px rgba(255,210,63,0.7);
+      animation: lizBootLoad 1.4s cubic-bezier(0.4,0,0.2,1) 0.5s forwards;
+    }
+    @keyframes lizBootPop {
+      to { transform: rotate(-6deg) scale(1); }
+    }
+    @keyframes lizBootFloat {
+      0%,100% { transform: rotate(-6deg) translateY(0); }
+      50%     { transform: rotate(-6deg) translateY(-10px); }
+    }
+    @keyframes lizBootSlide {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes lizBootFade { to { opacity: 1; } }
+    @keyframes lizBootLoad { to { width: 100%; } }
+  </style>
+
+  <!-- CSS principal -->
   <link rel="stylesheet" href="./css/design-system.css">
   <link rel="stylesheet" href="./css/animations.css">
   <link rel="stylesheet" href="./css/components.css">
   <link rel="stylesheet" href="./css/screens.css">
   <link rel="stylesheet" href="./css/games.css">
-
-  <!-- Fontes: preload não-bloqueante — render não espera download -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="style"
-        href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap"
-        onload="this.onload=null;this.rel='stylesheet'">
-  <noscript>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap">
-  </noscript>
 </head>
 <body>
-  <div id="liz-app"></div>
-
-  <!-- Loader inicial enquanto JS carrega -->
-  <div id="liz-preload" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#4527A0,#6A1B9A);z-index:9999;color:#fff;font-family:system-ui,sans-serif;">
-    <div style="text-align:center;">
-      <div style="width:64px;height:64px;margin:0 auto 16px;border:5px solid rgba(255,255,255,0.2);border-top-color:#FFD23F;border-radius:50%;animation:spin 0.9s linear infinite;"></div>
-      <div style="font-weight:700;letter-spacing:0.04em;">Carregando LizKids…</div>
+  <div id="liz-app">
+    <!-- SPLASH INLINE: aparece em ~50ms, antes do JS executar.
+         É removido após o bootstrap via router.takeoverBootSplash() -->
+    <div id="liz-boot-splash" class="liz-boot-splash">
+      <div class="liz-boot-splash__mark">
+        <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="bs_lumi" cx="35%" cy="30%" r="80%">
+              <stop offset="0%"  stop-color="#FFF6C2"/>
+              <stop offset="55%" stop-color="#FFD23F"/>
+              <stop offset="100%" stop-color="#F4A300"/>
+            </radialGradient>
+          </defs>
+          <path d="M120 20 C 130 20 138 32 144 52 C 150 72 162 78 184 78 C 206 78 218 90 214 108 C 210 126 198 134 184 148 C 170 162 174 178 184 198 C 194 218 178 230 158 222 C 138 214 128 220 120 230 C 112 220 102 214 82 222 C 62 230 46 218 56 198 C 66 178 70 162 56 148 C 42 134 30 126 26 108 C 22 90 34 78 56 78 C 78 78 90 72 96 52 C 102 32 110 20 120 20 Z"
+            fill="url(#bs_lumi)" stroke="#C97700" stroke-width="3" stroke-linejoin="round"/>
+          <ellipse cx="98" cy="112" rx="14" ry="18" fill="#2E2257"/>
+          <ellipse cx="142" cy="112" rx="14" ry="18" fill="#2E2257"/>
+          <circle cx="102" cy="106" r="6" fill="#fff"/>
+          <circle cx="146" cy="106" r="6" fill="#fff"/>
+          <path d="M100 142 Q 120 162 140 142" stroke="#2E2257" stroke-width="5" fill="#5C1A3A" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="liz-boot-splash__name">LizKids</div>
+      <div class="liz-boot-splash__tagline">Aprender é uma aventura mágica</div>
+      <div class="liz-boot-splash__loader"><div class="liz-boot-splash__loader-fill"></div></div>
     </div>
   </div>
-  <style>
-    @keyframes spin { to { transform: rotate(360deg); } }
-  </style>
 
   <script type="module" src="./js/main.js"></script>
-  <script>
-    // Remove preloader assim que a primeira tela (splash) estiver montada
-    // — sem esperar window.load nem setTimeout desnecessário
-    function _hidePL () {
-      var pl = document.getElementById('liz-preload');
-      if (!pl) return;
-      pl.style.transition = 'opacity 0.25s';
-      pl.style.opacity = '0';
-      setTimeout(function () { pl && pl.remove(); }, 280);
-    }
-    document.addEventListener('liz:ready', _hidePL, { once: true });
-    // Fallback seguro: se o evento nunca chegar (erro grave), remove em 4s
-    setTimeout(_hidePL, 4000);
-  </script>
 </body>
 </html>
