@@ -1,9 +1,11 @@
 /* =========================================================================
-   LIZKIDS — SISTEMA DE PARTÍCULAS
-   Confete celebratório + sparkles ambientais leves (CSS-driven).
+   LIZKIDS — SISTEMA DE PARTÍCULAS (versão performance)
+   Contagens ajustadas para tablets Android médios (60fps target).
    ========================================================================= */
 
-const CONFETTI_COLORS = ['#FFD23F','#FF7BB5','#5BE0A3','#4F7CFF','#B57BFF','#FF8A65','#7EE8D4'];
+const CONFETTI_COLORS = [
+  '#FFD23F','#FF7BB5','#5BE0A3','#4F7CFF','#B57BFF','#FF8A65','#7EE8D4','#FFC2DD',
+];
 
 let host = null;
 
@@ -16,61 +18,92 @@ function ensureHost () {
 }
 
 export const Particles = {
-  /** Dispara N peças de confete a partir do centro/topo */
-  confetti (count = 60) {
+  /**
+   * Confete celebratório.
+   * count reduzido para 36 (era 60–80): mantém impacto visual sem engasgar tablets.
+   */
+  confetti (count = 36) {
     const h = ensureHost();
+    const frag = document.createDocumentFragment();
+
     for (let i = 0; i < count; i++) {
-      const piece = document.createElement('div');
-      piece.className = 'liz-confetti';
-      piece.style.left = (Math.random() * 100) + 'vw';
-      piece.style.backgroundColor = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
-      piece.style.transform = `rotate(${Math.random() * 360}deg)`;
-      piece.style.setProperty('--confetti-x', (Math.random() * 200 - 100) + 'px');
-      const dur = 2.4 + Math.random() * 2.2;
-      piece.style.animationDuration = dur + 's';
-      piece.style.animationDelay = (Math.random() * 0.4) + 's';
-      // Algumas peças são circulares para variar
-      if (Math.random() > 0.6) piece.style.borderRadius = '50%';
-      // Algumas com aspect-ratio diferente
-      piece.style.height = (10 + Math.random() * 16) + 'px';
-      h.appendChild(piece);
-      setTimeout(() => piece.remove(), (dur + 0.5) * 1000);
+      const p = document.createElement('div');
+      p.className = 'liz-confetti';
+      p.style.left = (Math.random() * 100) + 'vw';
+      p.style.backgroundColor = CONFETTI_COLORS[i % CONFETTI_COLORS.length];
+      p.style.transform = `rotate(${Math.random() * 360}deg)`;
+      p.style.setProperty('--confetti-x', (Math.random() * 180 - 90) + 'px');
+      const dur = 2.2 + Math.random() * 1.8;
+      p.style.animationDuration = dur + 's';
+      p.style.animationDelay    = (Math.random() * 0.3) + 's';
+      if (Math.random() > 0.6) p.style.borderRadius = '50%';
+      p.style.height = (10 + Math.random() * 14) + 'px';
+      frag.appendChild(p);
+      setTimeout(() => p.remove(), (dur + 0.6) * 1000);
     }
+
+    h.appendChild(frag);
   },
 
-  /** Camada ambiente de estrelinhas subindo (chamar 1x ao montar uma tela) */
-  ambientSparkles (containerEl, count = 14) {
+  /**
+   * Sparkles ambientais (estrelinhas subindo).
+   * count padrão 8 (era 14–24): GPU-friendly em dispositivos fracos.
+   * Cria num DocumentFragment para minimizar reflows.
+   */
+  ambientSparkles (containerEl, count = 8) {
     const layer = document.createElement('div');
     layer.className = 'liz-sparkles';
+
+    const frag = document.createDocumentFragment();
+    const starSvg = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/></svg>`;
+
     for (let i = 0; i < count; i++) {
       const sp = document.createElement('div');
       sp.className = 'liz-sparkle';
-      sp.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/></svg>`;
-      sp.style.left = (Math.random() * 100) + '%';
-      sp.style.animationDuration = (8 + Math.random() * 10) + 's';
-      sp.style.animationDelay   = (Math.random() * 8) + 's';
-      sp.style.opacity = 0.6 + Math.random() * 0.4;
-      sp.style.transform = `scale(${0.6 + Math.random() * 0.8})`;
-      layer.appendChild(sp);
+      sp.innerHTML = starSvg;
+      sp.style.cssText = [
+        `left:${(Math.random() * 100).toFixed(1)}%`,
+        `animation-duration:${(10 + Math.random() * 12).toFixed(1)}s`,
+        `animation-delay:${(Math.random() * 10).toFixed(1)}s`,
+        `opacity:${(0.5 + Math.random() * 0.5).toFixed(2)}`,
+        `transform:scale(${(0.5 + Math.random() * 0.7).toFixed(2)})`,
+      ].join(';');
+      frag.appendChild(sp);
     }
+
+    layer.appendChild(frag);
     containerEl.appendChild(layer);
     return layer;
   },
 
-  burst (x, y, count = 14) {
+  /**
+   * Burst radial num ponto específico (ex.: ao comprar item na loja).
+   * count padrão 12 (era 14).
+   */
+  burst (x, y, count = 12) {
     const h = ensureHost();
+    const frag = document.createDocumentFragment();
+
     for (let i = 0; i < count; i++) {
-      const piece = document.createElement('div');
-      piece.className = 'liz-confetti';
-      piece.style.left = x + 'px';
-      piece.style.top  = y + 'px';
-      piece.style.backgroundColor = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
-      const ang = (Math.PI * 2 * i) / count + Math.random() * 0.4;
-      const dist = 80 + Math.random() * 140;
-      piece.style.setProperty('--confetti-x', (Math.cos(ang) * dist) + 'px');
-      piece.style.animationDuration = (1.2 + Math.random()) + 's';
-      h.appendChild(piece);
-      setTimeout(() => piece.remove(), 2200);
+      const p = document.createElement('div');
+      p.className = 'liz-confetti';
+      p.style.left = x + 'px';
+      p.style.top  = y + 'px';
+      p.style.position = 'fixed';
+      p.style.backgroundColor = CONFETTI_COLORS[i % CONFETTI_COLORS.length];
+      const ang  = (Math.PI * 2 * i) / count + Math.random() * 0.4;
+      const dist = 60 + Math.random() * 110;
+      p.style.setProperty('--confetti-x', (Math.cos(ang) * dist) + 'px');
+      p.style.animationDuration = (1.0 + Math.random() * 0.8) + 's';
+      frag.appendChild(p);
+      setTimeout(() => p.remove(), 2000);
     }
+
+    h.appendChild(frag);
+  },
+
+  /** Remove todas as partículas vivas (útil ao trocar de tela) */
+  clear () {
+    if (host) host.innerHTML = '';
   },
 };
