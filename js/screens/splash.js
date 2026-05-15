@@ -15,7 +15,7 @@ export const SplashScreen = {
     Debug.log('Splash', 'mount()');
     const wrap = el('div', { class: 'liz-splash' });
 
-    Particles.ambientSparkles(wrap, 24);
+    Particles.ambientSparkles(wrap, 10);
 
     const mark = el('div', { class: 'liz-splash__mark', html: CHARACTERS.lumi() });
     const name = el('div', { class: 'liz-splash__name' }, ['LizKids']);
@@ -34,7 +34,7 @@ export const SplashScreen = {
       const hasProfile = Storage.getActiveProfile();
       Debug.log('Splash', `Transição → ${hasProfile ? 'home' : 'profile-select'}`);
       Router.navigate(hasProfile ? 'home' : 'profile-select');
-    }, 800);
+    }, 450);
 
     return wrap;
   },
