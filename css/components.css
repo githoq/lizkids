@@ -86,8 +86,8 @@
 
 .liz-glass {
   background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur)) saturate(150%);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  backdrop-filter: blur(10px) saturate(130%);
+  -webkit-backdrop-filter: blur(10px) saturate(130%);
   border: 1.5px solid var(--glass-border);
   border-radius: var(--r-xl);
 }
@@ -185,8 +185,10 @@
 .liz-modal {
   position: fixed; inset: 0;
   display: flex; align-items: center; justify-content: center;
-  background: radial-gradient(circle at center, rgba(46,34,87,0.6), rgba(46,34,87,0.88));
+  background: radial-gradient(circle at center, rgba(46,34,87,0.55), rgba(46,34,87,0.85));
   z-index: var(--z-modal);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   animation: lizFadeIn var(--t-med) var(--ease-soft);
   padding: var(--sp-5);
 }
@@ -257,7 +259,7 @@
 /* ---------- BACK BUTTON ---------- */
 .liz-back {
   display: inline-flex; align-items: center; gap: var(--sp-2);
-  padding: 12px 22px 12px 14px;
+  padding: 10px 20px 10px 12px;
   background: var(--cloud);
   border-radius: var(--r-pill);
   box-shadow: var(--sh-soft);
@@ -267,4 +269,4 @@
   transition: transform var(--t-fast) var(--ease-pop);
 }
 .liz-back:hover { transform: translateX(-3px); }
-.liz-back svg { width: 22px; height: 22px; }
+.liz-back svg { width: 20px; height: 20px; }

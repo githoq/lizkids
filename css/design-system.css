@@ -4,7 +4,7 @@
    Todos os módulos da plataforma consomem estas variáveis.
    ========================================================================== */
 
-/* Fontes carregadas via <link rel="preload"> no HTML para não bloquear render */
+/* Fontes carregadas via <link> no HTML head (sem @import bloqueante) */
 
 :root {
   /* ---------- Paleta oficial LizKids ---------- */
@@ -52,7 +52,7 @@
   --glass-bg-strong: rgba(255, 255, 255, 0.78);
   --glass-bg-dark:   rgba(46, 34, 87, 0.35);
   --glass-border:    rgba(255, 255, 255, 0.7);
-  --glass-blur:      4px;
+  --glass-blur:      18px;
 
   /* ---------- Tipografia ---------- */
   --font-display: 'Fredoka', system-ui, sans-serif;
@@ -117,9 +117,9 @@
 
   /* ---------- Durações padrão ---------- */
   --t-fast: 180ms;
-  --t-med:  300ms;
-  --t-slow: 400ms;
-  --t-cine: 380ms;
+  --t-med:  340ms;
+  --t-slow: 600ms;
+  --t-cine: 1100ms;
 
   /* ---------- Z-index ---------- */
   --z-bg:      0;
