@@ -48,30 +48,30 @@ async function bootstrap () {
   // ----- 4. Registrar tela crítica imediatamente
   Router.register('splash', SplashScreen);
 
-  // Demais telas: lazy-load em paralelo sem bloquear o boot
-  Promise.all([
-    import('./screens/profile-select.js'),
-    import('./screens/home.js'),
-    import('./screens/games-library.js'),
-    import('./screens/teacher-dashboard.js'),
-    import('./screens/rewards-shop.js'),
-    import('./screens/game-host.js'),
-  ]).then(([
+  // Carregar e registrar telas antes da primeira navegação
+  const [
     { ProfileSelectScreen },
     { HomeScreen },
     { LibraryScreen },
     { TeacherScreen },
     { ShopScreen },
     { GameHostScreen },
-  ]) => {
-    Router.register('profile-select', ProfileSelectScreen);
-    Router.register('home',           HomeScreen);
-    Router.register('library',        LibraryScreen);
-    Router.register('teacher',        TeacherScreen);
-    Router.register('shop',           ShopScreen);
-    Router.register('game',           GameHostScreen);
-    Debug.log('Boot', 'Telas secundárias registradas.');
-  }).catch(err => Debug.warn('Boot', 'Erro ao carregar telas secundárias:', err.message));
+  ] = await Promise.all([
+    import('./screens/profile-select.js'),
+    import('./screens/home.js'),
+    import('./screens/games-library.js'),
+    import('./screens/teacher-dashboard.js'),
+    import('./screens/rewards-shop.js'),
+    import('./screens/game-host.js'),
+  ]);
+
+  Router.register('profile-select', ProfileSelectScreen);
+  Router.register('home',           HomeScreen);
+  Router.register('library',        LibraryScreen);
+  Router.register('teacher',        TeacherScreen);
+  Router.register('shop',           ShopScreen);
+  Router.register('game',           GameHostScreen);
+  Debug.log('Boot', 'Telas secundárias registradas.');
 
   // ----- 5. Sincronizar perfil ativo
   const active = Storage.getActiveProfile();
