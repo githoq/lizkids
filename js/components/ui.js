@@ -1,5 +1,5 @@
 /* =========================================================================
-   LIZKIDS — COMPONENTES UI REUTILIZÁVEIS
+   LIZKIDS — COMPONENTES UI PREMIUM
    ========================================================================= */
 
 import { el }       from '../core/utils.js';
@@ -13,16 +13,14 @@ import { CHARACTERS, ICONS } from '../data/characters.js';
 export function Logo (dark = false) {
   return el('div', { class: 'liz-logo' }, [
     el('div', { class: 'liz-logo__mark', html: CHARACTERS.lumi() }),
-    el('div', { class: 'liz-logo__text' + (dark ? ' liz-logo__text--dark' : ''), html: 'LizKids' }),
+    el('div', { class: 'liz-logo__text' + (dark ? ' liz-logo__text--dark' : '') }, ['LizKids']),
   ]);
 }
 
-/* ----- CENÁRIO MÁGICO ----- */
+/* ----- CENÁRIO MÁGICO (SkyStage) ----- */
 export function SkyStage (variant = 'day') {
   const sky = el('div', { class: 'liz-sky' + (variant === 'night' ? ' liz-sky--night' : '') });
   const sun = variant === 'day' ? el('div', { class: 'liz-sun' }) : null;
-
-  // 2 nuvens apenas (performance)
   const clouds = el('div', { class: 'liz-clouds' }, [
     el('div', { class: 'liz-cloud liz-cloud--1' }),
     el('div', { class: 'liz-cloud liz-cloud--2' }),
@@ -32,17 +30,21 @@ export function SkyStage (variant = 'day') {
     el('div', { class: 'liz-hill liz-hill--mid' }),
     el('div', { class: 'liz-hill liz-hill--front' }),
   ]);
-  const wrap = el('div', { class: 'liz-stage-bg', style: { position: 'absolute', inset: '0', zIndex: '0' } });
+  const wrap = el('div', { style: { position: 'absolute', inset: '0', zIndex: '0' } });
   wrap.appendChild(sky);
   if (sun) wrap.appendChild(sun);
   wrap.appendChild(clouds);
   wrap.appendChild(hills);
-  // 8 sparkles (era 14–24)
-  Particles.ambientSparkles(wrap, 8);
+
+  // Lazy import para não bloquear se particles não estiver disponível
+  import('./particles.js').then(({ Particles }) => {
+    Particles.ambientSparkles(wrap, 8);
+  }).catch(() => {});
+
   return wrap;
 }
 
-/* ----- TOPBAR com perfil + moedas/estrelas ----- */
+/* ----- TOPBAR PREMIUM ----- */
 export function TopBar ({ showBack = false, onBack = null } = {}) {
   const profile = Storage.getActiveProfile();
 
@@ -59,7 +61,6 @@ export function TopBar ({ showBack = false, onBack = null } = {}) {
   const right = el('div', { class: 'liz-topbar__right' });
 
   if (profile) {
-    // Pills de stats
     right.appendChild(el('div', { class: 'liz-pill liz-pill--coins' }, [
       el('span', { html: ICONS.coin() }),
       el('span', {}, [String(profile.coins)]),
@@ -73,12 +74,14 @@ export function TopBar ({ showBack = false, onBack = null } = {}) {
       el('span', {}, ['Nv ' + profile.level]),
     ]));
 
-    // Card do perfil
     const profCard = el('button', {
       class: 'liz-topbar__profile',
       onClick: () => { Audio.click(); Router.navigate('profile-select'); },
     }, [
-      el('div', { class: 'liz-topbar__profile-avatar', html: CHARACTERS[profile.avatarId]?.() || CHARACTERS.lumi() }),
+      el('div', {
+        class: 'liz-topbar__profile-avatar',
+        html: (CHARACTERS[profile.avatarId] || CHARACTERS.lumi)(),
+      }),
       el('div', {}, [
         el('div', { class: 'liz-topbar__profile-name' }, [profile.name]),
         el('div', { class: 'liz-topbar__profile-level' }, ['Nível ' + profile.level]),
@@ -90,7 +93,7 @@ export function TopBar ({ showBack = false, onBack = null } = {}) {
   return el('header', { class: 'liz-topbar' }, [left, right]);
 }
 
-/* ----- BARRA DE PROGRESSO XP DO ALUNO ----- */
+/* ----- BARRA DE XP ----- */
 export function XpBar () {
   const p = Storage.getActiveProfile();
   if (!p) return el('div');
@@ -100,35 +103,55 @@ export function XpBar () {
   ]);
 }
 
-/* ----- ESTRELAS (1 a 3) ----- */
+/* ----- ESTRELAS ----- */
 export function StarsRow (active = 0, total = 3) {
   const wrap = el('div', { class: 'liz-stars' });
   for (let i = 0; i < total; i++) {
     wrap.appendChild(el('span', {
       class: 'liz-stars__item' + (i < active ? ' liz-stars__item--on' : ''),
       html: ICONS.star(),
-      style: { animationDelay: (i * 200) + 'ms' },
+      style: { animationDelay: (i * 140) + 'ms', width: '24px', height: '24px' },
     }));
   }
   return wrap;
 }
 
-/* ----- MODAL DE RESULTADO DE JOGO ----- */
+/* ----- MODAL DE RESULTADO (cinematográfico) ----- */
 export function ResultModal ({ stars, coins, xp, gems = 0, onPlayAgain, onExit, title, message }) {
   const profile = Storage.getActiveProfile();
 
-  Particles.confetti(80);
-  Audio.victory();
+  // Efeitos imediatos
+  setTimeout(() => Particles.confetti(stars >= 3 ? 60 : 36), 50);
+  setTimeout(() => Audio.victory(), 80);
+
+  // Estrelas com delay escalonado
+  const starsEl = el('div', { class: 'liz-result__stars' });
+  for (let i = 0; i < 3; i++) {
+    const s = el('span', {
+      class: 'liz-stars__item' + (i < stars ? ' liz-stars__item--on' : ''),
+      html: ICONS.star(),
+      style: { width: '48px', height: '48px', animationDelay: (i * 200 + 400) + 'ms' },
+    });
+    starsEl.appendChild(s);
+  }
+
+  const mascotHtml = (CHARACTERS[profile?.avatarId] || CHARACTERS.lumi)();
 
   const panel = el('div', { class: 'liz-result__panel' }, [
-    el('div', { class: 'liz-result__mascot', html: CHARACTERS[profile?.avatarId] ? CHARACTERS[profile.avatarId]() : CHARACTERS.lumi() }),
-    el('div', { class: 'liz-result__title' }, [title || 'Parabéns!']),
-    el('div', { class: 'liz-result__msg' }, [message || 'Você mandou muito bem!']),
-    el('div', { class: 'liz-result__stars' }, [StarsRow(stars, 3)]),
+    el('div', { class: 'liz-result__mascot', html: mascotHtml }),
+    el('div', { class: 'liz-result__title' }, [title || (stars >= 3 ? 'Incrível!' : 'Muito bem!')]),
+    el('div', { class: 'liz-result__msg' }, [message || (stars >= 3 ? 'Você foi perfeito!' : 'Continue praticando!')]),
+    starsEl,
     el('div', { class: 'liz-result__rewards' }, [
-      el('div', { class: 'liz-pill liz-pill--coins' }, [el('span', { html: ICONS.coin() }), '+' + (coins || 0)]),
-      el('div', { class: 'liz-pill liz-pill--xp' }, [el('span', { html: ICONS.flame() }), '+' + (xp || 0) + ' XP']),
-      ...(gems ? [el('div', { class: 'liz-pill liz-pill--gems' }, [el('span', { html: ICONS.gem() }), '+' + gems])] : []),
+      el('div', { class: 'liz-pill liz-pill--coins', style: { fontSize: 'var(--fs-sm)' } }, [
+        el('span', { html: ICONS.coin() }), '+' + (coins || 0),
+      ]),
+      el('div', { class: 'liz-pill liz-pill--xp', style: { fontSize: 'var(--fs-sm)' } }, [
+        el('span', { html: ICONS.flame() }), '+' + (xp || 0) + ' XP',
+      ]),
+      ...(gems > 0 ? [el('div', { class: 'liz-pill liz-pill--gems', style: { fontSize: 'var(--fs-sm)' } }, [
+        el('span', { html: ICONS.gem() }), '+' + gems,
+      ])] : []),
     ]),
     el('div', { class: 'liz-result__actions' }, [
       el('button', {
@@ -144,6 +167,5 @@ export function ResultModal ({ stars, coins, xp, gems = 0, onPlayAgain, onExit, 
 
   const host = el('div', { class: 'liz-result' }, [panel]);
   document.body.appendChild(host);
-
   return host;
 }
