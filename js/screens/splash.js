@@ -29,12 +29,12 @@ export const SplashScreen = {
     wrap.appendChild(tag);
     wrap.appendChild(loader);
 
-    // Transição automática — 800ms é suficiente para o branding ser percebido
+    // Transição automática (cancelável via unmount)
     this._timer = setTimeout(() => {
       const hasProfile = Storage.getActiveProfile();
       Debug.log('Splash', `Transição → ${hasProfile ? 'home' : 'profile-select'}`);
       Router.navigate(hasProfile ? 'home' : 'profile-select');
-    }, 800);
+    }, 2600);
 
     return wrap;
   },
