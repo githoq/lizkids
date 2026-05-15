@@ -85,6 +85,9 @@ function bootstrap () {
     startPerfMonitor();
   }
 
+  // Listener de level-up
+  import('./core/levelup.js').then(({ initLevelUpListener }) => initLevelUpListener());
+
   // Medir tempo até pronto
   const bootElapsed = performance.now() - BOOT_START;
   Debug.log('Boot', `Módulos prontos em ${bootElapsed.toFixed(0)}ms`);
