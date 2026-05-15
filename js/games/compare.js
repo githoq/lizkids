@@ -1,5 +1,5 @@
 /* =========================================================================
-   LIZKIDS — MAIOR OU MENOR
+   LIZKIDS — MAIOR OU MENOR   QA-APROVADO
    ========================================================================= */
 
 import { el, rndInt, sleep } from '../core/utils.js';
@@ -16,22 +16,22 @@ export const CompareGame = {
     const profile = Storage.getActiveProfile();
     if (!profile) {
       setTimeout(() => Router.navigate('profile-select'), 0);
-      return el('div', { style: { position:'absolute', inset:'0', background:'var(--bg-deep-1)', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontWeight:'800', fontFamily:'Fredoka,sans-serif' } }, ['Redirecionando…']);
+      return el('div', { style: { position: 'absolute', inset: '0', background: 'var(--bg-deep-1)' } });
     }
-    const progress = profile.gameProgress[gameDef.id] || {};
-    const playerLevel = Math.min(3, progress.level || 1);
+
+    const level = Math.min(3, profile.gameProgress[gameDef.id]?.level || 1);
+    let round = 0, correct = 0, locked = false;
 
     const wrap = el('div', { class: 'liz-game' });
     wrap.appendChild(SkyStage('day'));
 
-    let round = 0, correct = 0, locked = false;
-    const roundPill = el('div', { class: 'liz-pill' }, [el('span', { html: ICONS.star() }), el('span', {}, ['1/' + ROUNDS])]);
-
+    const roundTxt = el('span', {}, [`1/${ROUNDS}`]);
     wrap.appendChild(el('div', { class: 'liz-game__topbar' }, [
-      el('button', { class: 'liz-back', onClick: () => { Audio.click(); Router.navigate('library'); } },
-        [el('span', { html: ICONS.back() }), 'Sair']),
-      el('div', { class: 'liz-game__title' }, [gameDef.title]),
-      el('div', { class: 'liz-game__hud' }, [roundPill]),
+      el('button', { class: 'liz-back', onClick: () => { Audio.click(); Router.navigate('library'); } }, [el('span', { html: ICONS.back() }), 'Sair']),
+      el('div',    { class: 'liz-game__title' }, [gameDef.title]),
+      el('div',    { class: 'liz-game__hud' }, [
+        el('div', { class: 'liz-pill liz-pill--stars' }, [el('span', { html: ICONS.star() }), roundTxt]),
+      ]),
     ]));
 
     const stage = el('div', { class: 'liz-game__stage' });
@@ -40,52 +40,63 @@ export const CompareGame = {
     function nextRound () {
       stage.innerHTML = '';
       round++;
-      roundPill.children[1].textContent = round + '/' + ROUNDS;
+      roundTxt.textContent = `${round}/${ROUNDS}`;
 
-      const max = playerLevel === 1 ? 20 : playerLevel === 2 ? 50 : 99;
+      const max  = level === 1 ? 20 : level === 2 ? 50 : 99;
       let a = rndInt(1, max), b = rndInt(1, max);
-      while (a === b) b = rndInt(1, max);
+      // Garantir diferentes (máx 10 tentativas)
+      let tries = 0;
+      while (a === b && tries < 10) { b = rndInt(1, max); tries++; }
+      if (a === b) b = a + 1; // fallback
+
       const wantBigger = Math.random() < 0.5;
       const correctVal = wantBigger ? Math.max(a, b) : Math.min(a, b);
+      const label      = wantBigger ? 'MAIOR' : 'MENOR';
 
-      stage.appendChild(el('div', {
-        style: { background: 'rgba(255,255,255,0.95)', borderRadius: 'var(--r-xl)', padding: '32px', textAlign: 'center', boxShadow: 'var(--sh-lg)', maxWidth: '640px', width: '100%' }
+      const questionBox = el('div', {
+        style: {
+          background: 'rgba(255,255,255,0.97)', borderRadius: 'var(--r-xl)',
+          padding: '32px', textAlign: 'center', boxShadow: 'var(--sh-lg)',
+          maxWidth: '640px', width: '100%',
+        }
       }, [
-        el('div', { class: 't-eyebrow' }, ['Toque no número ' + (wantBigger ? 'MAIOR' : 'MENOR')]),
-        el('div', { class: 'math-question__expr', style: { gap: '32px', marginTop: '24px' } }, [
-          makeNumberCard(a),
-          makeNumberCard(b),
+        el('div', { class: 't-eyebrow', style: { marginBottom: '20px', fontSize: 'var(--fs-md)' } },
+          ['Toque no número ', el('span', { class: 'text-gradient', style: { fontStyle: 'normal' } }, [label])]),
+        el('div', { style: { display: 'flex', justifyContent: 'center', gap: '28px', flexWrap: 'wrap' } }, [
+          makeNumCard(a, correctVal, stage),
+          makeNumCard(b, correctVal, stage),
         ]),
-      ]));
+      ]);
+      stage.appendChild(questionBox);
 
+      // Registrar listener em cada card
       stage.querySelectorAll('.compare-card').forEach(c => {
         c.addEventListener('click', () => onAnswer(Number(c.dataset.val), correctVal, c));
       });
     }
 
-    function makeNumberCard (n) {
-      return el('button', {
-        class: 'math-question__slot compare-card',
-        data: { val: n },
-        style: { minWidth: '140px', height: '140px', fontSize: 'var(--fs-3xl)', cursor: 'pointer' },
-      }, [String(n)]);
-    }
-
     async function onAnswer (chosen, correctVal, btn) {
       if (locked) return;
       locked = true;
+      stage.querySelectorAll('.compare-card').forEach(b => b.style.pointerEvents = 'none');
+
       if (chosen === correctVal) {
         btn.classList.add('math-option--correct');
+        btn.style.boxShadow = '0 0 0 6px rgba(91,224,163,0.5)';
         Audio.correct();
         correct++;
       } else {
         btn.classList.add('math-option--wrong');
         Audio.wrong();
         stage.querySelectorAll('.compare-card').forEach(b => {
-          if (Number(b.dataset.val) === correctVal) b.classList.add('math-option--correct');
+          if (Number(b.dataset.val) === correctVal) {
+            b.classList.add('math-option--correct');
+            b.style.boxShadow = '0 0 0 6px rgba(91,224,163,0.5)';
+          }
         });
       }
-      await sleep(900);
+
+      await sleep(950);
       locked = false;
       if (round >= ROUNDS) finish();
       else nextRound();
@@ -95,16 +106,15 @@ export const CompareGame = {
       let stars = 1;
       if (correct >= ROUNDS - 1) stars = 3;
       else if (correct >= ROUNDS - 3) stars = 2;
-      const xp = 10 + correct * 4;
-      const coins = 5 + correct * 2;
+      const xp = 10 + correct * 4, coins = 5 + correct * 2;
       Storage.saveGameRound(profile.id, gameDef.id, {
         stars, score: correct * 100, xp, coins,
-        level: Math.min(3, playerLevel + (stars === 3 ? 1 : 0)),
+        level: Math.min(3, level + (stars >= 2 ? 1 : 0)),
       });
       ResultModal({
         stars, coins, xp,
-        title: stars === 3 ? 'Comparação Perfeita!' : 'Continua assim!',
-        message: `${correct} de ${ROUNDS} comparações corretas.`,
+        title:   stars === 3 ? 'Campeão dos Números!' : 'Muito bem!',
+        message: `${correct} de ${ROUNDS} comparações certas.`,
         onPlayAgain: () => Router.navigate('game', { gameId: gameDef.id }),
         onExit:      () => Router.navigate('library'),
       });
@@ -115,3 +125,15 @@ export const CompareGame = {
   },
   unmount () {},
 };
+
+function makeNumCard (n, correctVal, stage) {
+  return el('button', {
+    class: 'math-question__slot compare-card',
+    style: {
+      minWidth: '130px', height: '130px',
+      fontSize: 'var(--fs-3xl)', cursor: 'pointer',
+      transition: 'transform 160ms, box-shadow 160ms',
+    },
+    data: { val: n },
+  }, [String(n)]);
+}
