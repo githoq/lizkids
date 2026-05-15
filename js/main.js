@@ -97,7 +97,7 @@ async function bootstrap () {
   // ----- 8. Service worker (PWA) — tolerante a falhas
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./service-worker.js')
+      // service worker disabled temporarily
         .then(() => Debug.log('Boot', 'Service worker registrado.'))
         .catch(err => Debug.warn('Boot', 'SW falhou (sem efeito em dev):', err.message));
     });
@@ -105,7 +105,7 @@ async function bootstrap () {
 
   // ----- 9. Boot do app
   Debug.log('Boot', 'Navegando para splash…');
-  Router.navigate('splash');
+  Router.navigate('profile-select');
 
   // Sinaliza que a primeira tela está pronta → preloader pode sumir
   document.dispatchEvent(new CustomEvent('liz:ready'));
