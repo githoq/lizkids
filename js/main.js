@@ -1,122 +1,111 @@
 /* =========================================================================
-   LIZKIDS — BOOTSTRAP
-   ORDEM CRÍTICA: error-overlay PRIMEIRO. Tudo o mais depois.
+   LIZKIDS — BOOTSTRAP DEFINITIVO
+   - Static imports (fetch paralelo automático)
+   - Takeover do splash inline em ~50ms
+   - Boot time medido + FPS monitor com ?debug=1
    ========================================================================= */
 
-import { initErrorOverlay, Debug, showErrorOverlay } from './core/error-overlay.js';
+const BOOT_START = performance.now();
+const MIN_SPLASH_MS = 650;  // splash mínimo perceptível antes da transição
 
-// ----- 1. Armar captura de erros ANTES de qualquer outro import com efeitos colaterais
+import { initErrorOverlay, Debug, showErrorOverlay } from './core/error-overlay.js';
 initErrorOverlay();
 
-// ----- 2. Importar o resto com tratamento defensivo
+import { Router }  from './core/router.js';
+import { Storage } from './core/storage.js';
+import { State, Bus } from './core/state.js';
+import { startTimeTracker } from './core/utils.js';
+import { startPerfMonitor } from './core/perf.js';
+
+import { SplashScreen }         from './screens/splash.js';
+import { ProfileSelectScreen }  from './screens/profile-select.js';
+import { HomeScreen }           from './screens/home.js';
+import { LibraryScreen }        from './screens/games-library.js';
+import { TeacherScreen }        from './screens/teacher-dashboard.js';
+import { ShopScreen }           from './screens/rewards-shop.js';
+import { GameHostScreen }       from './screens/game-host.js';
+
 try {
-  await bootstrap();
+  bootstrap();
 } catch (e) {
-  Debug.error('Boot', 'Falha no bootstrap:', e);
+  Debug.error('Boot', 'Falha catastrófica:', e);
   showErrorOverlay({
-    kind: 'Erro no carregamento do app',
+    kind: 'Erro no carregamento',
     message: e?.message || String(e),
     stack: e?.stack || '',
   });
 }
 
-async function bootstrap () {
-  Debug.log('Boot', 'Iniciando carregamento dos módulos…');
+function bootstrap () {
+  Debug.log('Boot', 'Iniciando…');
 
-  // ----- Core + splash em paralelo (caminho crítico)
-  const [
-    { Router },
-    { Storage },
-    { State, Bus },
-    { startTimeTracker },
-    { SplashScreen },
-  ] = await Promise.all([
-    import('./core/router.js'),
-    import('./core/storage.js'),
-    import('./core/state.js'),
-    import('./core/utils.js'),
-    import('./screens/splash.js'),
-  ]);
-
-  Debug.log('Boot', 'Caminho crítico carregado.');
-
-  // ----- 3. Inicializar router
   const host = document.getElementById('liz-app');
-  if (!host) throw new Error('Elemento #liz-app não encontrado no DOM.');
+  if (!host) throw new Error('#liz-app não encontrado');
   Router.init(host);
 
-  // ----- 4. Registrar tela crítica imediatamente
-  Router.register('splash', SplashScreen);
-
-  // Carregar e registrar telas antes da primeira navegação
-  const [
-    { ProfileSelectScreen },
-    { HomeScreen },
-    { LibraryScreen },
-    { TeacherScreen },
-    { ShopScreen },
-    { GameHostScreen },
-  ] = await Promise.all([
-    import('./screens/profile-select.js'),
-    import('./screens/home.js'),
-    import('./screens/games-library.js'),
-    import('./screens/teacher-dashboard.js'),
-    import('./screens/rewards-shop.js'),
-    import('./screens/game-host.js'),
-  ]);
-
+  // Registrar telas
+  Router.register('splash',         SplashScreen);
   Router.register('profile-select', ProfileSelectScreen);
   Router.register('home',           HomeScreen);
   Router.register('library',        LibraryScreen);
   Router.register('teacher',        TeacherScreen);
   Router.register('shop',           ShopScreen);
   Router.register('game',           GameHostScreen);
-  Debug.log('Boot', 'Telas secundárias registradas.');
 
-  // ----- 5. Sincronizar perfil ativo
+  // Restaurar perfil ativo
   const active = Storage.getActiveProfile();
   if (active) {
     State.setProfile(active);
-    Debug.log('Boot', `Perfil ativo restaurado: ${active.name} (${active.id})`);
-  } else {
-    Debug.log('Boot', 'Nenhum perfil ativo.');
+    Debug.log('Boot', `Perfil restaurado: ${active.name}`);
   }
 
-  // ----- 6. Tracker de tempo
   startTimeTracker();
 
-  // ----- 7. Eventos globais
+  // Listener de rotas
   Bus.on('route:change', ({ from, to }) => {
-    Debug.log('Boot', `Rota mudou: ${from || '(início)'} → ${to}`);
+    Debug.log('Boot', `Rota: ${from || '(início)'} → ${to}`);
   });
 
+  // Atalhos
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') Router.back();
   });
 
-  // ----- 8. Service worker (PWA) — tolerante a falhas
+  // Service worker (offline) — não-bloqueante
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      // service worker disabled temporarily
-        .then(() => Debug.log('Boot', 'Service worker registrado.'))
-        .catch(err => Debug.warn('Boot', 'SW falhou (sem efeito em dev):', err.message));
+      navigator.serviceWorker.register('./service-worker.js')
+        .then(() => Debug.log('Boot', 'Service worker pronto.'))
+        .catch(err => Debug.warn('Boot', 'SW falhou:', err.message));
     });
   }
 
-  // ----- 9. Boot do app
-  Debug.log('Boot', 'Navegando para splash…');
-  Router.navigate('profile-select');
+  // FPS monitor opcional
+  if (location.search.includes('debug=1')) {
+    startPerfMonitor();
+  }
 
-  // Sinaliza que a primeira tela está pronta → preloader pode sumir
-  document.dispatchEvent(new CustomEvent('liz:ready'));
+  // Medir tempo até pronto
+  const bootElapsed = performance.now() - BOOT_START;
+  Debug.log('Boot', `Módulos prontos em ${bootElapsed.toFixed(0)}ms`);
 
-  // Banner amigável no console
+  // ----- TAKEOVER DO SPLASH INLINE -----
+  // Aguardar tempo mínimo para a animação do splash ser apreciada,
+  // depois transicionar direto para a primeira tela real.
+  const waitMore = Math.max(0, MIN_SPLASH_MS - bootElapsed);
+  setTimeout(() => {
+    const firstScreen = Storage.getActiveProfile() ? 'home' : 'profile-select';
+    Debug.log('Boot', `Takeover do splash → ${firstScreen} (espera adicional: ${waitMore.toFixed(0)}ms)`);
+    Router.takeoverBootSplash();
+    Router.navigate(firstScreen);
+  }, waitMore);
+
+  // API de debug pública
+  window.LizKids = { Router, Storage, State, Debug, version: 'v3' };
+
   console.log(
     '%c LizKids ',
     'background:#FFD23F;color:#2E2257;font-weight:700;padding:4px 12px;border-radius:6px;',
-    'Plataforma carregada. Logs: [Router], [Home], [GameHost] etc.'
+    `boot ${bootElapsed.toFixed(0)}ms · ?debug=1 para FPS monitor`
   );
-
-  // Expor utilitários de debug em desenvolvimento
-  window.LizKids = { Router, Storage, State, Debug };
 }
