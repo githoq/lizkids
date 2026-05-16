@@ -1,54 +1,53 @@
 /* =========================================================================
-   LIZKIDS — GAME HOST com Level Select integrado
+   LIZKIDS — GAME HOST (5 jogos premium)
    ========================================================================= */
-
-import { el }     from '../core/utils.js';
-import { Router } from '../core/router.js';
+import { el }      from '../core/utils.js';
+import { Router }  from '../core/router.js';
 import { Storage } from '../core/storage.js';
-import { Debug }  from '../core/error-overlay.js';
-import { GAMES }  from '../data/games-catalog.js';
-import { ICONS }  from '../data/characters.js';
+import { Debug }   from '../core/error-overlay.js';
+import { GAMES }   from '../data/games-catalog.js';
+import { ICONS }   from '../data/characters.js';
 import { buildLevelSelect } from '../core/game-engine.js';
 
-import { MemoryGame }   from '../games/memory.js';
-import { MathGame }     from '../games/math.js';
-import { SequenceGame } from '../games/sequence.js';
-import { CountGame }    from '../games/count.js';
-import { CompareGame }  from '../games/compare.js';
-import { ShapesGame }   from '../games/shapes.js';
+import { MathAdventureGame } from '../games/math.js';
+import { MagicWordsGame    } from '../games/words.js';
+import { MemoryMagicGame   } from '../games/memory.js';
+import { LogicSequenceGame } from '../games/sequence.js';
+import { ShapesSortGame    } from '../games/shapes.js';
 
 const REGISTRY = {
-  'memory-match':    MemoryGame,
-  'math-adventure':  MathGame,
-  'sequence-logic':  SequenceGame,
-  'count-objects':   CountGame,
-  'compare-numbers': CompareGame,
-  'shapes-colors':   ShapesGame,
+  'math-adventure': MathAdventureGame,
+  'magic-words':    MagicWordsGame,
+  'memory-magic':   MemoryMagicGame,
+  'logic-sequence': LogicSequenceGame,
+  'shapes-sort':    ShapesSortGame,
 };
+
+/* Validação em carga */
+for (const [id, impl] of Object.entries(REGISTRY)) {
+  if (!impl?.mount) Debug.error('GameHost', `"${id}" sem mount()`);
+}
 
 export const GameHostScreen = {
   currentGame: null,
-
   mount (params) {
     const profile = Storage.getActiveProfile();
-    if (!profile) { setTimeout(() => Router.navigate('profile-select'), 0); return placeholder(); }
+    if (!profile) { setTimeout(() => Router.navigate('profile-select'), 0); return ph(); }
 
     const gameDef = GAMES.find(g => g.id === params?.gameId);
-    if (!gameDef) { setTimeout(() => Router.navigate('library'), 0); return placeholder(); }
+    if (!gameDef) { setTimeout(() => Router.navigate('library'), 0); return ph(); }
 
     const impl = REGISTRY[gameDef.id];
 
-    /* Sem nível → mostrar level select */
+    /* Sem nível → level select */
     if (!params?.level) {
       if (!impl) return comingSoon(gameDef);
-
       return buildLevelSelect({
         gameDef, profile,
         onSelect: (level) => Router.navigate('game', { gameId: gameDef.id, level }),
       });
     }
 
-    /* Com nível → montar o jogo */
     if (!impl) return comingSoon(gameDef);
 
     try {
@@ -62,25 +61,19 @@ export const GameHostScreen = {
       throw e;
     }
   },
-
   unmount () {
     try { this.currentGame?.unmount?.(); } catch {}
     this.currentGame = null;
   },
 };
 
-/* Helpers */
-function placeholder () {
-  return el('div', { style: { position: 'absolute', inset: '0', background: 'var(--bg-deep-1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: 'Fredoka, sans-serif', fontWeight: '800' } }, ['Carregando…']);
-}
-
 function comingSoon (gameDef) {
-  return el('div', { style: { position: 'absolute', inset: '0', display: 'flex', alignItems: 'center', justifyContent: 'center', background: gameDef.grad, padding: '20px' } }, [
-    el('div', { class: 'liz-card', style: { textAlign: 'center', maxWidth: '460px' } }, [
-      el('h2', { class: 't-display-md', style: { marginBottom: '12px' } }, ['Em breve!']),
-      el('p', { style: { marginBottom: '20px', color: 'var(--ink-soft)' } }, [`"${gameDef.title}" está sendo preparado.`]),
+  return el('div', { style: { position:'absolute',inset:'0',display:'flex',alignItems:'center',justifyContent:'center',background:gameDef.grad,padding:'20px' } }, [
+    el('div', { class: 'liz-card', style: { textAlign:'center', maxWidth:'460px' } }, [
+      el('h2', { class: 't-display-md', style: { marginBottom:'12px' } }, ['Em breve!']),
       el('button', { class: 'liz-btn liz-btn--lilac liz-btn--sm', onClick: () => Router.navigate('library') },
         [el('span', { html: ICONS.back() }), 'Voltar']),
     ]),
   ]);
 }
+function ph () { return el('div', { style: { position:'absolute',inset:'0',background:'var(--bg-deep-1)' } }); }
