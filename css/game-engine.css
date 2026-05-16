@@ -1,0 +1,162 @@
+/* ==========================================================================
+   LIZKIDS — GAME ENGINE CSS
+   Level select, timer bar, combo display, motivational styles.
+   ========================================================================== */
+
+/* ── Level Select ─────────────────────────────────────────────────── */
+.liz-levelsel__panel {
+  position: relative;
+  z-index: var(--z-stage);
+  width: 100%; max-width: 900px;
+  margin: 0 auto;
+  padding: 86px var(--sp-5) var(--sp-8);
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+}
+.liz-levelsel__char {
+  width: 190px; height: 190px;
+  margin-bottom: var(--sp-4);
+  animation: lizFloat 3.8s ease-in-out infinite, lizPopIn 0.5s var(--ease-pop) both;
+  filter: drop-shadow(0 20px 28px rgba(0,0,0,0.3));
+  cursor: pointer;
+}
+.liz-levelsel__title {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(2rem, 5vw, 3rem); color: #fff;
+  text-shadow: 0 6px 0 rgba(46,34,87,0.2), 0 12px 26px rgba(0,0,0,0.3);
+  margin-bottom: 8px;
+}
+.liz-levelsel__sub {
+  color: rgba(255,255,255,0.9); font-weight: 800;
+  margin-bottom: var(--sp-5);
+}
+
+/* ── Grade de Níveis ──────────────────────────────────────────────── */
+.liz-level-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--sp-3);
+  width: 100%; max-width: 760px;
+  margin-bottom: var(--sp-5);
+}
+@media (min-width: 560px) {
+  .liz-level-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+.liz-level-card {
+  position: relative;
+  background: rgba(255,255,255,0.94);
+  border-radius: var(--r-xl);
+  padding: var(--sp-4) var(--sp-3);
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  cursor: pointer;
+  box-shadow: var(--sh-soft);
+  transition: transform 200ms var(--ease-pop), box-shadow 200ms;
+  border: 3px solid transparent;
+  animation: lizPopIn 0.4s var(--ease-pop) both;
+  text-align: center;
+  min-height: 150px;
+}
+.liz-level-card:not(.liz-level-card--locked):hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: var(--sh-md);
+}
+.liz-level-card--selected {
+  border-color: var(--liz-blue);
+  box-shadow: 0 0 0 4px rgba(79,124,255,0.22), var(--sh-md);
+  transform: scale(1.04);
+}
+.liz-level-card--recommended { border-color: var(--liz-yellow); }
+.liz-level-card--locked       { opacity: 0.5; cursor: not-allowed; }
+
+.liz-level-card__rec {
+  position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
+  background: var(--liz-yellow); color: var(--ink);
+  font-weight: 900; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 3px 10px; border-radius: var(--r-pill);
+  white-space: nowrap; box-shadow: var(--sh-soft);
+}
+.liz-level-card__overlay {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.55);
+  border-radius: calc(var(--r-xl) - 3px);
+  color: var(--ink-mute);
+}
+.liz-level-card__overlay svg { width: 34px; height: 34px; }
+
+.liz-level-card__stars { display: flex; gap: 3px; }
+.liz-level-card__num {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: 2.2rem; color: var(--ink); line-height: 1;
+}
+.liz-level-card__label { font-weight: 900; font-size: var(--fs-sm); color: var(--ink); }
+.liz-level-card__desc  { font-weight: 700; font-size: 11px; color: var(--ink-soft); }
+
+/* ── Timer Bar (per-question countdown) ──────────────────────────── */
+.liz-timer-bar {
+  width: 100%; height: 9px;
+  background: rgba(46,34,87,0.10);
+  border-radius: var(--r-pill);
+  overflow: hidden; margin-top: var(--sp-3);
+}
+.liz-timer-bar__fill {
+  height: 100%; border-radius: var(--r-pill);
+  background: linear-gradient(90deg, var(--liz-green), var(--liz-yellow));
+  transform-origin: left; will-change: transform;
+  transition: background 300ms;
+  box-shadow: inset 0 2px 0 rgba(255,255,255,0.4);
+}
+.liz-timer-bar__fill--danger {
+  background: linear-gradient(90deg, #FF8A65, #E05800);
+}
+
+/* ── Pill de Combo ─────────────────────────────────────────────────── */
+.liz-combo-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px;
+  background: linear-gradient(135deg, var(--liz-pink), var(--liz-lilac));
+  color: #fff; font-weight: 900; font-size: var(--fs-sm);
+  border-radius: var(--r-pill);
+  box-shadow: 0 4px 12px rgba(181,123,255,0.4);
+  min-width: 80px; justify-content: center;
+  transition: transform 200ms var(--ease-pop);
+}
+.liz-combo-pill svg { width: 16px; height: 16px; }
+.liz-combo-pill--active { animation: lizPulse 0.8s var(--ease-pop); }
+
+/* ── Número da rodada / Questão ────────────────────────────────────── */
+.liz-round-indicator {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-weight: 900; color: #fff; font-size: var(--fs-sm);
+}
+.liz-round-dots {
+  display: flex; gap: 4px; align-items: center;
+}
+.liz-round-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: rgba(255,255,255,0.35);
+  transition: background 250ms, transform 250ms;
+}
+.liz-round-dot--done   { background: var(--liz-yellow); }
+.liz-round-dot--current {
+  background: #fff;
+  transform: scale(1.3);
+  box-shadow: 0 0 8px rgba(255,255,255,0.6);
+}
+.liz-round-dot--correct { background: var(--liz-green); }
+.liz-round-dot--wrong   { background: var(--liz-coral); }
+
+/* ── Next Level Banner (fim de jogo) ───────────────────────────────── */
+.liz-next-level-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, var(--liz-blue), var(--liz-lilac));
+  color: #fff; border-radius: var(--r-pill);
+  font-family: var(--font-display); font-weight: 700; font-size: var(--fs-md);
+  box-shadow: 0 8px 0 rgba(47,79,204,0.4), 0 14px 28px rgba(79,124,255,0.4);
+  cursor: pointer;
+  animation: lizPopIn 0.4s var(--ease-pop) 0.6s both;
+  transition: transform 180ms var(--ease-pop);
+}
+.liz-next-level-btn:hover { transform: translateY(-3px) scale(1.03); }
