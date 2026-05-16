@@ -254,3 +254,13 @@
   position: absolute; top: 0; width: 11px; height: 16px; border-radius: 3px;
   animation: lizConfettiFall linear forwards;
 }
+
+/* ── Botão de Sílaba (Palavras Mágicas) ── */
+.liz-syll-btn {
+  cursor: pointer;
+  transition: transform 160ms var(--ease-pop), opacity 200ms;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.liz-syll-btn:hover { transform: translateY(-3px) scale(1.06); }
+.liz-syll-btn:active { transform: translateY(2px) scale(.96); }
