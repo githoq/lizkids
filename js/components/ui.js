@@ -138,52 +138,51 @@ export function StarsRow (active = 0, total = 3) {
 }
 
 /* ----- MODAL DE RESULTADO (cinematográfico) ----- */
-export function ResultModal ({ stars, coins, xp, gems = 0, onPlayAgain, onExit, title, message }) {
+export function ResultModal ({ stars, coins, xp, gems = 0, onPlayAgain, onExit, title, message, nextLevel, gameId, level }) {
   const profile = Storage.getActiveProfile();
 
-  // Efeitos imediatos
   setTimeout(() => Particles.confetti(stars >= 3 ? 60 : 36), 50);
   setTimeout(() => Audio.victory(), 80);
 
-  // Estrelas com delay escalonado
   const starsEl = el('div', { class: 'liz-result__stars' });
   for (let i = 0; i < 3; i++) {
-    const s = el('span', {
+    starsEl.appendChild(el('span', {
       class: 'liz-stars__item' + (i < stars ? ' liz-stars__item--on' : ''),
       html: ICONS.star(),
       style: { width: '48px', height: '48px', animationDelay: (i * 200 + 400) + 'ms' },
-    });
-    starsEl.appendChild(s);
+    }));
   }
 
   const mascotHtml = (CHARACTERS[profile?.avatarId] || CHARACTERS.lumi)();
 
+  /* Botão próximo nível */
+  const actions = el('div', { class: 'liz-result__actions' });
+  if (nextLevel && gameId && stars >= 1) {
+    actions.appendChild(el('button', {
+      class: 'liz-next-level-btn',
+      onClick: () => { Audio.click(); host.remove(); Router.navigate('game', { gameId, level: nextLevel }); },
+    }, [el('span', { html: ICONS.bolt() }), `Nível ${nextLevel}!`]));
+  }
+  actions.appendChild(el('button', {
+    class: 'liz-btn liz-btn--green',
+    onClick: () => { Audio.click(); host.remove(); onPlayAgain?.(); },
+  }, ['Repetir']));
+  actions.appendChild(el('button', {
+    class: 'liz-btn liz-btn--lilac',
+    onClick: () => { Audio.click(); host.remove(); onExit?.(); },
+  }, ['Níveis']));
+
   const panel = el('div', { class: 'liz-result__panel' }, [
     el('div', { class: 'liz-result__mascot', html: mascotHtml }),
     el('div', { class: 'liz-result__title' }, [title || (stars >= 3 ? 'Incrível!' : 'Muito bem!')]),
-    el('div', { class: 'liz-result__msg' }, [message || (stars >= 3 ? 'Você foi perfeito!' : 'Continue praticando!')]),
+    el('div', { class: 'liz-result__msg' }, [message || '']),
     starsEl,
     el('div', { class: 'liz-result__rewards' }, [
-      el('div', { class: 'liz-pill liz-pill--coins', style: { fontSize: 'var(--fs-sm)' } }, [
-        el('span', { html: ICONS.coin() }), '+' + (coins || 0),
-      ]),
-      el('div', { class: 'liz-pill liz-pill--xp', style: { fontSize: 'var(--fs-sm)' } }, [
-        el('span', { html: ICONS.flame() }), '+' + (xp || 0) + ' XP',
-      ]),
-      ...(gems > 0 ? [el('div', { class: 'liz-pill liz-pill--gems', style: { fontSize: 'var(--fs-sm)' } }, [
-        el('span', { html: ICONS.gem() }), '+' + gems,
-      ])] : []),
+      el('div', { class: 'liz-pill liz-pill--coins' }, [el('span', { html: ICONS.coin() }), '+' + (coins || 0)]),
+      el('div', { class: 'liz-pill liz-pill--xp'   }, [el('span', { html: ICONS.flame() }), '+' + (xp || 0) + ' XP']),
+      ...(gems > 0 ? [el('div', { class: 'liz-pill liz-pill--gems' }, [el('span', { html: ICONS.gem() }), '+' + gems])] : []),
     ]),
-    el('div', { class: 'liz-result__actions' }, [
-      el('button', {
-        class: 'liz-btn liz-btn--green',
-        onClick: () => { Audio.click(); host.remove(); onPlayAgain?.(); },
-      }, ['Jogar de Novo']),
-      el('button', {
-        class: 'liz-btn liz-btn--lilac',
-        onClick: () => { Audio.click(); host.remove(); onExit?.(); },
-      }, ['Voltar']),
-    ]),
+    actions,
   ]);
 
   const host = el('div', { class: 'liz-result' }, [panel]);
